@@ -1,0 +1,125 @@
+% To familiarize yourself with this template, the body contains
+% some examples of its use.  Look them over.  Then you can
+% run LaTeX on this file.  After you have LaTeXed this file then
+% you can look over the result either by printing it out with
+% dvips or using xdvi.
+%
+
+\documentclass[twoside]{article}
+%\usepackage{soul}
+\usepackage{./lecnotes_macros}
+
+
+\begin{document}
+%FILL IN THE RIGHT INFO.
+%\lecture{**LECTURE-NUMBER**}{**DATE**}{**LECTURER**}{**SCRIBE**}
+\lecture{3}{11 September 2023}{Shashank Vatedka}{Gautam Singh}
+%\footnotetext{These notes are partially based on those of Nigel Mansell.}
+
+%All figures are to be placed in a separate folder named ``images''
+
+% **** YOUR NOTES GO HERE:
+
+\section{Cramer-Rao Inequality}
+
+This inequality shows a lower bound on the variance of an estimator. In
+particular, if the estimator is unbiased, it gives a lower bound on the mean
+squared error of the estimator.
+
+\begin{theorem}[Cramer-Rao Lower Bound]
+  \label{thm:crlb}
+  Suppose \(f_{X^n|\theta}\) is a known probability density on \(\bR^n\), and
+  \(g\brak{X^n}\) is any estimator satisfying
+  \begin{equation}
+    \pdiff{\theta}\int_{x^n\in\bR^n}f_{X^n|\theta}\brak{x^n}g\brak{x^n}dx^n = 
+    \int_{x^n\in\bR^n}g\brak{x^n}\pdiff{\theta}\brak{f_{X^n|\theta}\brak{x^n}}dx^n.
+    \label{eq:crlb-diff}
+  \end{equation}
+  Then,
+  \begin{equation}
+    \var\brak{g\brak{X^n}} \ge 
+    \frac{\brak{\pdiff{\theta}\mean{g\brak{X^n}}}^2}{\mean{\brak{\pdiff{\theta}\log{f_{X^n|\theta}\brak{X^n}}}^2}}.
+    \label{eq:crlb-ineq}
+  \end{equation}
+\end{theorem}
+
+\begin{proof}
+  We prove \eqref{eq:crlb-ineq} using the \emph{Cauchy-Schwarz Inequality}
+
+  \begin{equation}
+    \brak{\cov\brak{U,V}}^2 \le \var\brak{U}\var\brak{V}.
+    \label{eq:cs-ineq}
+  \end{equation}
+
+  Setting \(U=g\brak{X^n}\) and
+  \(V=\pdiff{\theta}\log{f_{X^n|\theta}\brak{X^n}}\), and noting that
+
+  \begin{align}
+    \mean{V} &= \int_{x^n\in\bR^n}f_{X^n|\theta}\brak{x^n}\pdiff{\theta}\log{f_{X^n|\theta}\brak{x^n}}dx^n \\
+             &= \int_{x^n\in\bR^n}\pdiff{\theta}f_{X^n|\theta}\brak{x^n}dx^n \label{eq:g-one} \\
+             &= \pdiff{\theta}\int_{x^n\in\bR^n}f_{X^n|\theta}\brak{x^n}dx^n \\
+             &= \pdiff{\theta}\brak{1} = 0,
+    \label{eq:exp-v-zero}
+  \end{align}
+
+  where \eqref{eq:g-one} is obtained by setting \(g\brak{x^n} = 1\) in
+  \eqref{eq:crlb-diff} and \eqref{eq:exp-v-zero} is obtained by using the
+  definition of a probability density function. Using \eqref{eq:exp-v-zero},
+
+  \begin{align}
+    \cov\brak{U,V} &= \mean{\brak{U-\mean{U}}\brak{V-\mean{V}}} \\
+                   &= \mean{UV}-\mean{U}\mean{V} = \mean{UV} \\
+                   &= \int_{x^n\in\bR^n}g\brak{x^n}\brak{\pdiff{\theta}f_{X^n|\theta}\brak{x^n}}dx^n.
+    \label{eq:cov-rhs}
+  \end{align}
+
+  Thus, using \eqref{eq:cov-rhs}, \eqref{eq:exp-v-zero} and rearranging
+  \eqref{eq:cs-ineq}, we obtain \eqref{eq:crlb-ineq}, as desired.
+\end{proof}
+
+An important corollary of \autoref{thm:crlb} is obtained when the estimator
+\(g\brak{X^n}\) is unbiased. In this case, we have \(\mean{g\brak{X^n}} =
+\theta\) and \(\var\brak{g\brak{X^n}} = \mse\brak{g}\), which gives us
+\autoref{cor:crlb-ub}.
+
+\begin{corollary}[Cramer-Rao Lower Bound for Unbiased Estimators]
+  \label{cor:crlb-ub}
+  In addition to the conditions imposed on \(f_{X^n|\theta}\) and
+  \(g\brak{X^n}\) in \autoref{thm:crlb}, if \(g\) is an unbiased estimator, then
+  
+  \begin{equation}
+    \mse\brak{g} \ge \frac{1}{\mean{\brak{\pdiff{\theta}\log{f_{X^n|\theta}\brak{X^n}}}^2}}.
+    \label{eq:crlb-ub}
+  \end{equation}
+
+  Additionally, the denominator of the right-hand side of \eqref{eq:crlb-ub} is
+  called the \textbf{Fisher information} that \(X^n\) carries about \(\theta\).
+\end{corollary}
+
+\begin{example}
+  Calculate the Fisher information carried by \(N\) independent and identically
+  distributed samples \(X_i \sim \cN\brak{\theta, \sigma^2},\ 1 \le i \le n\).
+\end{example}
+
+\begin{solution}
+  Note that
+  \begin{equation}
+    \pdiff{\theta}\log{f_{X^n|\theta}\brak{X^n}} = \pdiff{\theta}\sum_{i=1}^n\sbrak{-\frac{\brak{X_i-\theta}^2}{2\sigma^2} - \frac{1}{2}\log\brak{2\pi\sigma^2}} = \sum_{i=1}^n\frac{X_i-\theta}{\sigma^2}.
+  \end{equation}
+  Since the samples are iid, the Fisher information is given by
+  \begin{equation}
+    \mean{\brak{\pdiff{\theta}\log{f_{X^n|\theta}\brak{X^n}}}^2} = \mean{\brak{\sum_{i=1}^n\frac{X_i-\theta}{\sigma^2}}^2} = \frac{1}{\sigma^4}\sum_{i=1}^n\var\brak{X_i} = \frac{n}{\sigma^2}.
+  \end{equation}
+\end{solution}
+
+\section{Estimation Protocols}
+
+Consider a situation where independent and identically distributed samples are
+present at various locations. These sampls need to be sent to a central server
+that computes the mean of these samples. Communication constraints are now
+involved, such as the addition of noise or constraint on the number of bits that
+can be reliably sent (quantization error). Therefore, we need to replace
+estimators with \emph{estimation protocols}. Some use cases of estimation
+protocols include sensor networks and federated learning.
+
+\end{document}
