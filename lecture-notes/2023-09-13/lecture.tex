@@ -1,0 +1,133 @@
+% To familiarize yourself with this template, the body contains
+% some examples of its use.  Look them over.  Then you can
+% run LaTeX on this file.  After you have LaTeXed this file then
+% you can look over the result either by printing it out with
+% dvips or using xdvi.
+%
+
+\documentclass[twoside]{article}
+%\usepackage{soul}
+\usepackage{./lecnotes_macros}
+
+
+\begin{document}
+%FILL IN THE RIGHT INFO.
+%\lecture{**LECTURE-NUMBER**}{**DATE**}{**LECTURER**}{**SCRIBE**}
+\lecture{4}{13 September 2023}{Shashank Vatedka}{Gautam Singh}
+%\footnotetext{These notes are partially based on those of Nigel Mansell.}
+
+%All figures are to be placed in a separate folder named ``images''
+
+% **** YOUR NOTES GO HERE:
+
+\section{Lossy Compresssion, Quantization}
+
+We require to communicate \(X^d\in\bR^d\). To do so, it is encoded as \(c^k\in\cbrak{0,1}^k\). Suppose the decoded quantity is \(\hat{X}^d\in\bR^d\). Here, we have \(k = dR\), that is, \(k\) is linearly dependent on \(d\). The \emph{average distortion} is given by
+
+\begin{equation}
+    L = \sum_{i=1}^k\mean{l\brak{X_i,\hat{X_i}}}
+    \label{eq:avg-dist}
+\end{equation}
+
+and the \emph{mean-squared-error} is given by
+
+\begin{equation}
+    \mse\brak = \sum_{i=1}^n\mean{\brak{X_i-\hat{X_i}}^2}.
+    \label{eq:mse-def}
+\end{equation}
+
+\subsection{Quantization of Real Numbers}
+
+Consider the case when \(d=1\). Let \(X\sim f_X\). A possible encoding function could be
+
+\begin{equation}
+    c = \mathrm{Enc}\brak{X} =
+    \begin{cases}
+        1 & X \ge \mean{X} \\
+        0 & X < \mean{X}
+    \end{cases}.
+    \label{eq:enc-possible}
+\end{equation}
+
+The best decoding function is
+
+\begin{equation}
+    \mathrm{Dec}\brak{X} =
+    \begin{cases}
+        \mean{X|X\ge\mean{X}} & c = 1 \\
+        \mean{X|X<\mean{X}} & c = 0
+    \end{cases}.
+    \label{eq:dec-possible}
+\end{equation}
+
+\begin{theorem}
+    \label{thm:mse-min}
+    For any \(\alpha\in\bR\) and random variable \(X\),
+    \begin{equation}
+        \mean{\brak{X-\alpha}^2} \ge \var\brak{X}
+        \label{eq:var-mse}
+    \end{equation}
+    with equality iff \(\alpha = \mean{X}\).
+\end{theorem}
+
+\begin{proof}
+    We have,
+    \begin{align}
+        \mean{\brak{X-\alpha}^2} &= \mean{\sbrak{\brak{X-\mean{X}}+\brak{\mean{X}-\alpha}}^2} \\
+                                 &= \var\brak{X} + \brak{\mean{X}-\alpha}^2
+                                 \ge \var\brak{X}
+    \end{align}
+    with equality iff \(\alpha = \mean{X}\).
+\end{proof}
+
+Using \autoref{thm:mse-min}, we see that \eqref{eq:dec-possible} is indeed the minimum mean-squared error (MMSE) estimator of \(X\). This gives us the following.
+
+\begin{theorem}
+    \label{thm:opt-dec-int}
+    Given intervals \(I_i, 1 \le i \le k\), the optimal decoder is
+    \begin{equation}
+        \hat{X} = \hat{x}_i = \mean{X|X\in I_i}.
+        \label{eq:dec-k-bits}
+    \end{equation}
+    The points \(\hat{x}_i\) are called \textbf{reconstruction points}.
+\end{theorem}
+
+\subsection{Optimal Encoder Given Reconstruction Points}
+
+Suppose the reconstruction points \(\cbrak{\hat{x}_i}_{i=1}^{2^k}\) are given. We require to design an encoder that minimizes the MSE.
+
+\begin{theorem}
+    \label{thm:opt-enc-rp}
+    Given the reconstruction points \(\cbrak{\hat{x}_i}\), the encoder
+    \begin{equation}
+        g^{*} \triangleq \argmin_i\brak{x-\hat{x}_i}^2
+        \label{eq:g-min-def}
+    \end{equation}
+    is optimal in the MSE sense.
+\end{theorem}
+
+\begin{proof}
+    Consider any encoder \(g\). Then, by the definition \eqref{eq:g-min-def},
+    \begin{equation}
+        \mse\brak{g} - \mse\brak{g^{*}} = \int_{-\infty}^{\infty}f_X\brak{x}\sbrak{\brak{x-g\brak{x}}^2 - \brak{x-g^{*}\brak{x}}^2} \ge 0
+    \end{equation}
+    which implies \(\mse\brak{g} \ge \mse\brak{g^{*}}\). Additionally, the intervals are
+    \begin{equation}
+        I_j \triangleq \brak{\frac{\hat{x}_{j-1}+\hat{x}_j}{2},\ \frac{\hat{x}_j+\hat{x}_{j+1}}{2}}
+        \label{eq:I-j-def}
+    \end{equation}
+    where we define \(\hat{x}_{-1} = -\infty\) and \(\hat{x}_{2^k+1} = \infty\).
+\end{proof}
+
+\section{Lloyd-Max Algorithm}
+
+Using \autoref{thm:opt-dec-int} and \autoref{thm:opt-enc-rp}, we obtain the Lloyd-Max Algorithm as follows.
+
+\begin{enumerate}
+    \item Choose \(I_i, 1 \le i \le 2^k\).
+\item Choose the best \(\hat{x}_i\) for the \(I_i\).
+    \item Choose the best \(I_i\) for the \(\hat{x}_i\).
+    \item Repeat until the decrease in MSE is small enough.
+\end{enumerate}
+
+\end{document}
