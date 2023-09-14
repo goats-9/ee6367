@@ -1,0 +1,113 @@
+% To familiarize yourself with this template, the body contains
+% some examples of its use.  Look them over.  Then you can
+% run LaTeX on this file.  After you have LaTeXed this file then
+% you can look over the result either by printing it out with
+% dvips or using xdvi.
+%
+
+\documentclass[twoside]{article}
+%\usepackage{soul}
+\usepackage{./lecnotes_macros}
+
+
+\begin{document}
+%FILL IN THE RIGHT INFO.
+%\lecture{**LECTURE-NUMBER**}{**DATE**}{**LECTURER**}{**SCRIBE**}
+\lecture{5}{14 September 2023}{Shashank Vatedka}{Gautam Singh}
+%\footnotetext{These notes are partially based on those of Nigel Mansell.}
+
+%All figures are to be placed in a separate folder named ``images''
+
+% **** YOUR NOTES GO HERE:
+
+\section{Deterministic Single-Bit Scalar Quantization}
+
+Suppose we have to encode \(x\in\sbrak{0,1}\) using a single bit \(c\in\cbrak{0,1}\). Let the decoded output be \(\hat{x}\). We require to minimize the \emph{distortion} which is taken to be the maximum squared error
+
+\begin{equation}
+    \mathrm{Max-SE} = \max_{x\in\sbrak{0,1}}\brak{x-\hat{x}}^2.
+    \label{eq:max-se}
+\end{equation}
+
+One such set of encoding and decoding functions is
+
+\begin{align}
+    \mathrm{Enc}\brak{x} &= 
+    \begin{cases}
+        0 & x \le \frac{1}{2} \\
+        1 & x > \frac{1}{2}
+    \end{cases}
+    \label{eq:det-rd-enc} \\
+    \mathrm{Dec}\brak{c} &= 
+    \begin{cases}
+        \frac{1}{4} & c = 0 \\
+        \frac{3}{4} & c = 1
+    \end{cases}.
+    \label{eq:det-rd-dec}
+\end{align}
+
+This is called \emph{deterministic rounding} and has a maximum squared error of \(\frac{1}{16}\) as the absolute maximum error is \(\frac{1}{4}\).
+
+\section{Random Single-Bit Scalar Quantization}
+
+\begin{claim}
+    The maximum MSE of a random quantizer under no shared randomness is at least \(\frac{1}{16}\).
+\end{claim}
+
+\begin{proof}
+    In this case, \(c\) is a Bernoulli random variable and \(\hat{X}=\mathrm{Dec}\brak{c}\) is a random variable. Denote
+
+    \begin{equation}
+        \hat{X}_i \triangleq \mathrm{Dec}\brak{i},\ i \in \cbrak{0,1}.
+        \label{eq:X-hat-i-def}
+    \end{equation}
+
+    WLOG, let \(\mean{\hat{X}_0} \le \mean{\hat{X}_1}\). Then,
+
+    \begin{align}
+        \mean{\hat{X}_0} &\le p_C\brak{0}\mean{\hat{X}_0} + p_C\brak{1}\mean{\hat{X}_1} \\
+                         &= \mean{\hat{X}} \le \mean{\hat{X}_1}.
+                         \label{eq:bw-x-hats}
+    \end{align}
+
+    Suppose that \(x=0\) is encoded. Then,
+    
+    \begin{align}
+        \mean{\brak{x-\hat{X}}^2|x=0} &= \mean{\hat{X}^2|x=0} \\
+                                      &\ge \brak{\mean{\hat{X}|x=0}}^2 \\
+                                      &= \brak{\mean{\hat{X}_0|x=0}p_{c|x=0}\brak{0} + \mean{\hat{X}_1|x=0}p_{c|x=0}\brak{1}}^2 \\
+                                      &\ge \brak{\mean{\hat{X}_0|x=0}}^2.
+                                      \label{eq:rand-mse-lb-0}
+    \end{align}
+
+    If the claim is not true, then \eqref{eq:rand-mse-lb-0} gives
+
+    \begin{equation}
+        \mean{\hat{X}_0|x=0} \le \frac{1}{4}.
+        \label{eq:xhat-0}
+    \end{equation}
+
+    Similarly, if \(x=1\) is encoded,
+
+    \begin{align}
+        \brak{\mean{1-\hat{X}|x=1}}^2 &= \brak{1-\mean{\hat{X}|x=1}}^2 \\
+                                      &\ge \brak{1-\mean{\hat{X}_1|x=1}}^2.
+                                      \label{eq:rand-mse-lb-1}
+    \end{align}
+
+    Again, if the claim does not hold,
+
+    \begin{equation}
+        \mean{\hat{X}_1|x=1} > \frac{3}{4}.
+        \label{eq:xhat-1}
+    \end{equation}
+
+    Now, choosing \(x=\frac{1}{2}\), and using \eqref{eq:xhat-0} and \eqref{eq:xhat-1},
+    \begin{align}
+        \mean{\brak{\hat{X}-\frac{1}{2}}|x=\frac{1}{2}} \ge \brak{\mean{\hat{X}-\frac{1}{2}|x=\frac{1}{2}}}^2 \\
+        &= \brak{\mean{\hat{X}_0-\frac{1}{2}}p_{c|x=\frac{1}{2}}\brak{0}+\mean{\hat{X}_1-\frac{1}{2}}p_{c|x=\frac{1}{2}}\brak{1}}^2 \\
+        &\ge \brak{\mean{\frac{1}{2}-\hat{X}_0}}^2p_{c}^2\brak{0} + \brak{\mean{\frac{1}{2}-\hat{X}_1}}^2p_{c}^2\brak{1}
+    \end{align}
+\end{proof}
+
+\end{document}
