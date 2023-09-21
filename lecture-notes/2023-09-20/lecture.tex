@@ -1,0 +1,81 @@
+% To familiarize yourself with this template, the body contains
+% some examples of its use.  Look them over.  Then you can
+% run LaTeX on this file.  After you have LaTeXed this file then
+% you can look over the result either by printing it out with
+% dvips or using xdvi.
+%
+
+\documentclass[twoside]{article}
+%\usepackage{soul}
+\usepackage{./lecnotes_macros}
+
+
+\begin{document}
+%FILL IN THE RIGHT INFO.
+%\lecture{**LECTURE-NUMBER**}{**DATE**}{**LECTURER**}{**SCRIBE**}
+\lecture{7}{20 September 2023}{Shashank Vatedka}{Gautam Singh}
+%\footnotetext{These notes are partially based on those of Nigel Mansell.}
+
+%All figures are to be placed in a separate folder named ``images''
+
+% **** YOUR NOTES GO HERE:
+
+\section{Quantization of Vectors}
+
+In this situation, we must quantize high-dimensional vectors \(\vec{x}\in\bR^d\) using \(k\) bits, and recover a lossy version \(\vec{\hat{X}}\). Further, we assume that \(\norm{\vec{x}}\) is upper bounded.
+
+We use the algorithms for quantization of real numbers as follows. Define
+
+\begin{align}
+    x_{\mathrm{min}} &\triangleq \min_{1\le i\le d}\vec{x}^\top\vec{e_i} \\
+    x_{\mathrm{max}} &\triangleq \max_{1\le i\le d}\vec{x}^\top\vec{e_i}.
+    \label{eq:x-min-max-def}
+\end{align}
+
+Now, since each coordinate lies between \(x_{\mathrm{min}}\) and \(x_{\mathrm{max}}\), we can apply the previous algorithms. For example, using deterministic rounding,
+
+\begin{align}
+    \mathrm{Cost} &= \max_{\norm{\vec{x}} \le r} \mean{\norm{\vec{\hat{X}}-\vec{x}}^2} \\
+                  &= \max_{\norm{\vec{x}} \le r} \sum_{i=1}^d\mean{\brak{\hat{X}_i-x_i}^2} \\
+                  &= \frac{d\brak{x_{\mathrm{max}}-x_{\mathrm{min}}}^2}{2^{2k+2}} \le \frac{d\brak{2r^2}}{2^{2k+2}}
+                      \label{eq:det-cost}
+\end{align}
+
+In general, for any scalar quantizer with MSE \(m\), the cost is
+
+\begin{equation}
+    \mathrm{Cost} = 2r^2dm
+    \label{eq:cost-scalar}
+\end{equation}
+
+The \emph{time complexity} of applying such algorithms is \(\cO\brak{dT}\), where \(T\) is the time complexity for applying the scalar version of the algorithm, usually a constant-time algorithm. Thus, the time complexity usually grows linearly with \(d\).
+
+\section{Lower Bound on Cost for Deterministic Algorithms}
+
+Assume in this situation that \(k = \Theta\brak{d} = d\alpha\). Since the algorithm is deterministic, each \(k\)-bit sequence represents one point in space. Denote the \textbf{codebook} of the chosen point vectors and their corresponding \(k\)-bit sequence as \(\bC\). Clearly, given \(\bC\), the optimal encoding rule corresponds to searching for nearest neighbours, that is
+
+\begin{equation}
+    \mathrm{Enc}\brak{\vec{x}} = \argmin_{\vec{y}\in\bC}\norm{\vec{x}-\vec{y}}.
+    \label{eq:enc-opt}
+\end{equation}
+
+Denote the cost of a codebook \(\bC\) as
+
+\begin{equation}
+    \beta^2 \triangleq \mathrm{Cost} = \max_{\vec{x}\in\cB\brak{r}}\min_{\vec{y}\in\bC}\norm{\vec{x}-\vec{y}}^2.
+    \label{eq:cost-codebook}
+\end{equation}
+
+For every \(\vec{x}\in\cB\brak{r}\), it follows that there exists at least one codeword at distance at most \(\beta\). Hence, the union of the small balls of radius \(\beta\) covers the larger ball of radius \(r\). Thus,
+
+\begin{align}
+    \bigcup_{\vec{y}\in\bC}\cB\brak{\vec{y},\beta} &\supset \cB\brak{\vec{0},r} \\
+    \abs{\bC} &\ge \frac{\frac{\pi^{\frac{d}{2}}r^d}{\Gamma\brak{\frac{d}{2}+1}}}{\frac{\pi^{\frac{d}{2}}\beta^d}{\Gamma\brak{\frac{d}{2}+1}}} = \brak{\frac{r}{\beta}}^d \\
+    2^{d\alpha} &\ge \brak{\frac{r}{\beta}}^d \\
+    \beta^2 &\ge \frac{r^2}{2^{2\alpha}}
+    \label{eq:opt-cost-det}
+\end{align}
+
+Comparing with \eqref{eq:det-cost}, we see that \eqref{eq:opt-cost-det} is better by a factor of \(d\).
+
+\end{document}

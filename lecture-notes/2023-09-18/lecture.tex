@@ -1,0 +1,101 @@
+% To familiarize yourself with this template, the body contains
+% some examples of its use.  Look them over.  Then you can
+% run LaTeX on this file.  After you have LaTeXed this file then
+% you can look over the result either by printing it out with
+% dvips or using xdvi.
+%
+
+\documentclass[twoside]{article}
+%\usepackage{soul}
+\usepackage{./lecnotes_macros}
+
+
+\begin{document}
+%FILL IN THE RIGHT INFO.
+%\lecture{**LECTURE-NUMBER**}{**DATE**}{**LECTURER**}{**SCRIBE**}
+\lecture{6}{18 September 2023}{Shashank Vatedka}{Gautam Singh}
+%\footnotetext{These notes are partially based on those of Nigel Mansell.}
+
+%All figures are to be placed in a separate folder named ``images''
+
+% **** YOUR NOTES GO HERE:
+
+\section{Unbiased Quantization of Real Numbers}
+
+The deterministic encoding scheme discussed before is \emph{biased}. We consider a \emph{randomized rounding} scheme where
+
+\begin{align}
+    \mathrm{Enc}\brak{x} &= \mathrm{Ber}\brak{x} \\
+    \mathrm{Dec}\brak{c} &= c
+    \label{eq:ber-rand}
+\end{align}
+
+Here, the cost is
+
+\begin{align}
+    \mathrm{Cost} &= \max_{x\in\sbrak{0,1}}\mean{\brak{x-c}^2} \\
+                  &= \max_{x\in\sbrak{0,1}}x\brak{1-x} = \frac{1}{4}.
+\end{align}
+
+We claim that for any unbiased algorithm with no shared randomness, the cost is lower bounded by \(\frac{1}{4}\).
+
+\section{Estimation Schemes With Shared Randomness}
+
+Consider an encoder and decoder which share a uniform random variable \(U\in\sbrak{0,1}\). The encoder and decoder are defined as follows.
+
+\begin{align}
+    \mathrm{Enc}\brak{x} &= c =
+    \begin{cases}
+        1 & U \le x \\
+        0 & U > x
+    \end{cases} \\
+    \mathrm{Dec}\brak{c} &= \hat{X} = c + U - \frac{1}{2}.
+\end{align}
+
+Clearly, \(\mean{\hat{X}} = x\), so the scheme is unbiased. The cost is
+
+\begin{align}
+    \mean{\brak{\hat{X}-x}^2} &= \mean{\cbrak{\brak{c-x}+\brak{U-\frac{1}{2}}}^2} \\
+                              &= \var\brak{c} + \var\brak{U} + 2\mean{\brak{c-x}\brak{U-\frac{1}{2}}} \\
+                              &= x\brak{1-x} + \frac{1}{12} + 2\sbrak{\mean{cU}-x\mean{U-\frac{1}{2}}-\frac{1}{2}\mean{c}} \\
+                              &= x\brak{1-x} + \frac{1}{12} - x + 2\int_0^1cuf_U\brak{u}du \\
+                              &= x\brak{1-x} + \frac{1}{12} - x + 2\int_0^xudu = \frac{1}{12}
+\end{align}
+
+and this scheme beats randomized rounding with a cost equal to the variance of \(U\sim\mathrm{Unif}\sbrak{0,1}\).
+
+In summary,
+
+\begin{table}[!ht]
+    \centering
+    \begin{tabular}{|c|c|c|}
+        \hline
+        \textbf{Shared Randomness} & \textbf{Biased} & \textbf{Unbiased} \\
+        \hline
+        No & \(\frac{1}{16}\) & \(\frac{1}{4}\) \\
+        \hline
+        Yes & \(0.0459\ldots\) & \(\frac{1}{12}\) \\
+        \hline
+    \end{tabular}
+    \caption{Cost of using various estimation schemes.}
+    \label{tab:cost-est}
+\end{table}
+
+\section{Generalization To More Than One Bit}
+
+If we have \(k\) bits for quantization, then
+
+\begin{enumerate}
+    \item For \emph{deterministic rounding}, split \(\sbrak{0,1}\) into \(2^k\) equal sized intervals. The cost is \(\brak{\frac{1}{2^{k+1}}}^2\).
+    \item For \emph{randomized rounding}, split into \(2^k-1\) equal intervals, so that we have \(2^k\) reconstruction points. If \(x\in\sbrak{l_i,r_i}\), then
+        \begin{align}
+            \mathrm{Enc}\brak{x} &= c^k =
+            \begin{cases}
+                l_i & \textrm{wp} \frac{x-l_i}{r_i-l_i} \\
+                r_i & \textrm{else}
+            \end{cases} \\
+            \mathrm{Dec}\brak{c^k} &= \mathrm{Real}\brak{c^k}
+        \end{align}
+\end{enumerate}
+
+\end{document}
