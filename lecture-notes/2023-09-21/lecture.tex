@@ -1,0 +1,99 @@
+% To familiarize yourself with this template, the body contains
+% some examples of its use.  Look them over.  Then you can
+% run LaTeX on this file.  After you have LaTeXed this file then
+% you can look over the result either by printing it out with
+% dvips or using xdvi.
+%
+
+\documentclass[twoside]{article}
+%\usepackage{soul}
+\usepackage{./lecnotes_macros}
+
+
+\begin{document}
+%FILL IN THE RIGHT INFO.
+%\lecture{**LECTURE-NUMBER**}{**DATE**}{**LECTURER**}{**SCRIBE**}
+\lecture{8}{21 September 2023}{Shashank Vatedka}{Gautam Singh}
+%\footnotetext{These notes are partially based on those of Nigel Mansell.}
+
+%All figures are to be placed in a separate folder named ``images''
+
+% **** YOUR NOTES GO HERE:
+
+\section{Vector Quantization Using Shared Randomness}
+
+Suppose that \(\vec{X} \sim \mathrm{iid}\brak{\cN\brak{\vec{0},\beta^2}}\). Then,
+
+\begin{align}
+    \mean{\norm{\vec{X}}^2} &= \mean{\sum_{i=1}^dX_i^2} \\
+                            &= d\beta^2.
+                            \label{eq:exp2-norm}
+\end{align}
+
+Further, we note that
+
+\begin{equation}
+    \pr{\norm{\vec{X}}^2 \ge d\beta^2\brak{1+\delta}} \le e^{-\theta\brak{d}}
+    \label{eq:exp-conc-ineq}
+\end{equation}
+
+Consider a class of algorithms where the input vector is rotated using a 
+uniformly chosen rotation matrix \(\vec{R}\in\bM^{d\times d}\) before encoding 
+and then rotated back after decoding by applying \(\vec{R}^{-1}\). Clearly, 
+\(\vec{RR}^\top = \vec{I}\), and for an encoded vector \(\vec{x}\), \(\vec{y} 
+\triangleq \vec{Rx}\) is also similarly distributed to \(\vec{x}\). Since 
+\(\vec{x}\) is isotropically distributed, that is, depends on its 2-norm, it 
+follows that
+
+\begin{equation}
+    \frac{\vec{X}}{\norm{\vec{X}}} \sim \mathrm{Unif}\brak{\bS\brak{\vec{0},1}}.
+    \label{eq:unif-x-by-norm}
+\end{equation}
+
+For these schemes, a careful analysis shows
+
+\begin{equation}
+    \mathrm{Cost} \le \theta\brak{\frac{\norm{\vec{x}}^2\log{d}}{2^\alpha}}.
+    \label{eq:cost-rot}
+\end{equation}
+
+However, a small tweak to the above scheme can lead to better performance.
+Assume that \(k = d\brak{1+\cO{1}}\). The encoder takes a random rotation vector
+\(\vec{R}\) and computes \(\vec{y} = \vec{Rx}\), and the vector \(\vec{c}\)
+is transmitted, where
+
+\begin{equation}
+    c_i \triangleq \mathrm{sign}\brak{y_i} =
+    \begin{cases}
+        1 & y_i \ge 0 \\
+        -1 & \mathrm{otherwise}
+    \end{cases}.
+    \label{eq:ci-def}
+\end{equation}
+
+Along with \(\vec{c}\), a scale factor \(s\in\bR\) is also transmitted.
+
+Given \(\vec{c}\) and \(s\), the decoder computes
+
+\begin{equation}
+    \vec{\hat{X}} \triangleq s\vec{R}^\top\vec{c}.
+    \label{eq:xhat-dec}
+\end{equation}
+
+The most computationally intensive part is that of multiplication at the 
+encoder, which gives an overall time compelxity of \(\cO\brak{d^2}\).
+
+The squared error of this scheme is given by
+
+\begin{align}
+    \norm{\vec{x}-\vec{\hat{X}}}_2^2 &= \norm{\vec{R}\brak{\vec{x}-\vec{\hat{X}}}}_2^2 \\
+                                     &= \norm{\vec{Rx}}_2^2 + \norm{\vec{R\hat{X}}}_2^2 - 2<\vec{Rx},\vec{R\hat{X}}> \\
+                                     &= \norm{\vec{x}}_2^2 + s^2\norm{\vec{c}}_2^2 - 2<\vec{Rx},s\vec{c}> \\
+                                     &= \norm{\vec{x}}_2^2 + s^2d - 2s\sum_{i=1}^d\abs{\vec{Rx}_i} \\
+                                     &= \norm{\vec{x}}_2^2 + s^2d - 2s\norm{\vec{Rx}}_1 \\
+                                     &\ge \norm{\vec{x}}_2^2 - \frac{\norm{\vec{Rx}}_1^2}{d} = \theta{\norm{\vec{x}}_2^2}
+\end{align}
+
+where the minimum is achieved at \(s_{\mathrm{min}} = \frac{\norm{\vec{Rx}}_1}{d}\).
+
+\end{document}
