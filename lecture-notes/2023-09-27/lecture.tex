@@ -1,0 +1,129 @@
+% To familiarize yourself with this template, the body contains
+% some examples of its use.  Look them over.  Then you can
+% run LaTeX on this file.  After you have LaTeXed this file then
+% you can look over the result either by printing it out with
+% dvips or using xdvi.
+%
+
+\documentclass[twoside]{article}
+%\usepackage{soul}
+\usepackage{./lecnotes_macros}
+
+
+\begin{document}
+%FILL IN THE RIGHT INFO.
+%\lecture{**LECTURE-NUMBER**}{**DATE**}{**LECTURER**}{**SCRIBE**}
+\lecture{10}{27 September 2023}{Shashank Vatedka}{Gautam Singh}
+%\footnotetext{These notes are partially based on those of Nigel Mansell.}
+
+%All figures are to be placed in a separate folder named ``images''
+
+% **** YOUR NOTES GO HERE:
+
+\section{Unbiased Estimation in DRIVE}
+
+\begin{claim}
+    If \(\vec{R}\) is a uniform random rotation and \(s = \frac{\norm{\vec{x}}_2}{\norm{\vec{Rx}}_1}\), then DRIVE is unbiased.
+\end{claim}
+
+\begin{proof}
+    We want to show that \(\mean{\hat{\vec{X}}} = \vec{x}\ \forall \vec{x} \in 
+    \bR^d\). Consider
+    \begin{equation}
+        \vec{x}^\prime = \myvec{r & 0 & \ldots & 0}^\top
+        \label{eq:xpr-def}
+    \end{equation}
+    where \(r = \norm{\vec{x}}_2\). Note that any vector \(\vec{x}\) can be 
+    rotated to \(\vec{x}^\prime\), call the rotation matrix 
+    \(\vec{R}_{\vec{x}\rightarrow\vec{x}^\prime}\). We see immediately that
+    \begin{equation}
+        \vec{R}_{\vec{x}\rightarrow\vec{x}^\prime} = \vec{R}_{\vec{x}^\prime\rightarrow\vec{x}}^{-1}.
+        \label{eq:rrinv}
+    \end{equation}
+    Now,
+    \begin{align}
+        \hat{\vec{X}} &= s\vec{R}^\top\mathrm{sign}\brak{\vec{Rx}} \\
+                      &= s\vec{R}_{\vec{x}\rightarrow\vec{x}^\prime}^{-1}\vec{R}_{\vec{x}\rightarrow\vec{x}^\prime}\vec{R}^\top\mathrm{sign}\brak{\vec{R}\vec{R}_{\vec{x}\rightarrow\vec{x}^\prime}^{-1}\vec{R}_{\vec{x}\rightarrow\vec{x}^\prime}\vec{x}} \\
+                      &= s\vec{R}_{\vec{x}\rightarrow\vec{x}^\prime}^{-1}\vec{R}_{\vec{x}}^\top\mathrm{sign}\brak{\vec{R}_{\vec{x}}\vec{x}^\prime} \\
+    \end{align}
+    where we define
+    \begin{equation}
+        \vec{R}_{\vec{x}} \triangleq \vec{RR}_{\vec{x}\rightarrow\vec{x}^\prime}^{-1} = \myvec{\vec{r}_{\vec{x}}^{\brak{1}} & \ldots & \vec{r}_{\vec{x}}^{\brak{d}}}.
+        \label{eq:Rx-def}
+    \end{equation}
+    By \eqref{eq:xpr-def}, we have
+    \begin{equation}
+        \vec{R}_{\vec{x}}\vec{x}^\prime = \norm{\vec{x}}_2\vec{r}_{\vec{x}}^{\brak{1}}.
+        \label{eq:Rxpr-val}
+    \end{equation}
+    Define
+    \begin{equation}
+        \vec{y} \triangleq \mathrm{sign}\brak{\vec{R}_{\vec{x}}\vec{x}^\prime}.
+        \label{eq:y-def}
+    \end{equation}
+    Thus,
+    \begin{equation}
+        \vec{R}_{\vec{x}}^\top\vec{y} = \myvec{\langle\vec{r}_{\vec{x}}^{\brak{1}}\rangle & \ldots & \langle\vec{r}_{\vec{x}}^{\brak{d}}\rangle}^\top.
+        \label{eq:Rxy-val}
+    \end{equation}
+    But
+    \begin{align}
+        s &= \frac{\norm{\vec{x}}_2^2}{\norm{\vec{Rx}}_1} \\
+          &= \frac{\norm{\vec{x}}_2^2}{\norm{\vec{R}_{\vec{x}}\vec{x}^\prime}_1} \\
+          &= \frac{\norm{\vec{x}}_2^2}{\langle\vec{R}_{\vec{x}},\mathrm{sign}\brak{\vec{R}_{\vec{x}}\vec{x}^\prime}\rangle} \\
+          &= \frac{\norm{vec{x}}_2^2}{\langle\vec{R}_{\vec{x}}\vec{x}^\prime,\vec{y}\rangle} \\
+          &= \frac{\norm{vec{x}}_2}{\langle\vec{r}_{\vec{x}}^{\brak{1}},\vec{y}\rangle}
+    \end{align}
+    Thus,
+    \begin{equation}
+        \hat{\vec{X}} = \vec{R}_{\vec{x}\rightarrow\vec{x}^\prime}^{-1}\norm{\vec{x}}_2\myvec{\frac{\langle\vec{r}_{\vec{x}}^{\brak{1}}\rangle}{\langle\vec{r}_{\vec{x}}^{\brak{1}}\rangle} & \ldots & \frac{\langle\vec{r}_{\vec{x}}^{\brak{d}}\rangle}{\langle\vec{r}_{\vec{x}}^{\brak{1}}\rangle}}^\top.
+    \end{equation}
+    If \(\vec{y} = \vec{r}_{\vec{x}}^{\brak{1}}\), then we would have 
+    \begin{equation}
+        \hat{\vec{X}} = \vec{R}_{\vec{x}\rightarrow\vec{x}^\prime}^{-1}\norm{\vec{x}}_2\vec{e_1} = \vec{x}.
+    \end{equation}
+    Define
+    \begin{equation}
+        \bar{\vec{R}_{\vec{x}}} \triangleq \vec{R}\mathrm{diag}\brak{-1, 1, \ldots, 1}\vec{R}_{\vec{x}\rightarrow\vec{x}^\prime}^{-1}
+        \label{eq:Rxbar-def}
+    \end{equation}
+    Thus, if we use \(\bar{\vec{R}_{\vec{x}}}\) instead, we would get
+    \begin{equation}
+        \hat{\vec{X}}^{\prime\prime} = \vec{R}_{\vec{x}\rightarrow\vec{x}^\prime}^{-1}\norm{\vec{x}}_2\myvec{1 & -\frac{\langle\vec{r}_{\vec{x}}^{\brak{2}}\rangle}{\langle\vec{r}_{\vec{x}}^{\brak{1}}\rangle} & \ldots -\frac{\langle\vec{r}_{\vec{x}}^{\brak{d}}\rangle}{\langle\vec{r}_{\vec{x}}^{\brak{1}}\rangle}}^\top.
+        \label{eq:Xhat-dpr-def}
+    \end{equation}
+    We see that
+    \begin{align}
+        \mean{\hat{\vec{X}}^{\prime\prime}} &= \mean{\hat{\vec{X}}} \\
+        \mean{\hat{\vec{X}}^{\prime\prime}+\hat{\vec{X}}} &= 2\vec{x}
+    \end{align}
+    which implies that
+    \begin{equation}
+        \mean{\hat{\vec{X}}} = \vec{x}
+    \end{equation}
+\end{proof}
+
+We generalize this scheme.
+
+\begin{claim}
+    Suppose we replace \(\mathrm{sign}\vec{Rx}\) with any scalar quantizer
+    \(Q\brak{\vec{Rx}}\), and take
+    \begin{equation}
+        s = \frac{\norm{\vec{x}}_2^2}{\langle\vec{Rx},Q\brak{\vec{Rx}}\rangle}.
+        \label{eq:sq-def}
+    \end{equation}
+    Then, DRIVE is unbiased with MSE \( = \Theta\brak{\norm{\vec{x}}_2^2}\).
+\end{claim}
+
+However, if structured random rotation is used, then we cannot make the scheme
+unbiased by choosing \(s\).
+
+Note that if \(\vec{R}\) is a uniform random rotation or a structured random
+rotation, then \(\vec{y}_i = \vec{Rx}_i\) is approximately Gaussian distributed
+for all \(i\) identically. That is,
+
+\begin{equation}
+    \abs{F_{Y_i}\brak{y}-F_G\brak{y}} \to 0\ d \to \infty\ \forall y \in \bR
+\end{equation}
+
+\end{document}
