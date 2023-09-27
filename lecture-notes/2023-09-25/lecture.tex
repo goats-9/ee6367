@@ -143,12 +143,6 @@ as
 
 and \(\vec{D}\) is a diagonal matrix with iid Rademacher \(\cbrak{1,-1}\) entries.
 
-Using this choice of \(\vec{R}\), the overall complexity reduces to \(\cO\brak{d\log{d}}\) and the MSE is \(\cO\brak{\norm{\vec{x}}_2^2}\).
-
-\section{Unbiased Estimation in DRIVE}
-
-\begin{claim}
-    If \(\vec{R}\) is a uniform random rotation and \(s = \frac{\norm{\vec{x}}_2}{\norm{\vec{Rx}}_1}\), then DRIVE is unbiased.
-\end{claim}
+Using this choice of \(\vec{R}\), the overall complexity reduces to \(\cO\brak{d\log{d}}\) and the MSE is still \(\Theta\brak{\norm{\vec{x}}_2^2}\).
 
 \end{document}
