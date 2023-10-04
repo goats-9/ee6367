@@ -1,0 +1,122 @@
+% To familiarize yourself with this template, the body contains
+% some examples of its use.  Look them over.  Then you can
+% run LaTeX on this file.  After you have LaTeXed this file then
+% you can look over the result either by printing it out with
+% dvips or using xdvi.
+%
+
+\documentclass[twoside]{article}
+%\usepackage{soul}
+\usepackage{./lecnotes_macros}
+
+
+\begin{document}
+%FILL IN THE RIGHT INFO.
+%\lecture{**LECTURE-NUMBER**}{**DATE**}{**LECTURER**}{**SCRIBE**}
+\lecture{11}{10 October 2023}{Shashank Vatedka}{Gautam Singh}
+%\footnotetext{These notes are partially based on those of Nigel Mansell.}
+
+%All figures are to be placed in a separate folder named ``images''
+
+% **** YOUR NOTES GO HERE:
+
+\section{Applications of Quantization Problems}
+
+We consider some applications of quantization in real-world problems.
+
+\subsection{Mean Estimation by a Server}
+
+Suppose there are \(m\) users \(U_i\), each containing a data point \(\vec{x_i} \in \bR^d\) where \(\norm{\vec{x_i}}\le r\). Consider a separate server that wants to compute the mean estimate \(\bar{\vec{X}}\) from the \(\vec{x_i}\), where we define
+
+\begin{equation}
+    \bar{\vec{X}} \triangleq \frac{1}{m}\sum_{i=1}^m \vec{x_i}.
+    \label{eq:Xbar-def}
+\end{equation}
+
+The goal is to minimise the \emph{mean squared error}, defined as
+
+\begin{equation}
+    \mathrm{MSE}\brak{\vec{x_1},\ldots,\vec{x_n}} \triangleq \mean{\norm{\hat{\vec{X}}-\bar{\vec{X}}}^2}.
+    \label{eq:mse-def}
+\end{equation}
+
+One possible scheme is
+
+\begin{enumerate}
+    \item Each user independently quantizes their \(\vec{x_i}\) to form \(\vec{y_i}\).
+    \item The \(\vec{y_i}\) is transmitted to the server.
+    \item Server decodes the \(\vec{y_i}\) and reconstructs
+        \begin{equation}
+            \hat{\vec{X}} = \frac{1}{m}\sum_{i=1}^m \hat{\vec{x_i}}.
+            \label{eq:srv-mean}
+        \end{equation}
+\end{enumerate}
+
+For this scheme,
+
+\begin{align}
+    \mathrm{MSE} &= \mean{\norm{\sum_{i=1}^m\frac{\hat{\vec{X_i}}}{m} - \sum_{i=1}^m\frac{\vec{x_i}}{m}}^2} \\
+                 &= \frac{1}{m^2}\mean{\norm{\sum_{i=1}^m\brak{\hat{\vec{X_i}}-\vec{x_i}}}^2} \\
+                 &= \frac{1}{m^2}\brak{\sum_{i=1}^m\mean{\norm{\hat{\vec{X_i}}-\vec{x_i}}^2}+\sum{i=1}^m\sum_{j=i+1}^m\brak{\hat{\vec{X_i}}-\vec{x_i}}^\top\brak{\hat{\vec{X_j}}-\vec{x_j}}}.
+                 \label{eq:mse-expr}
+\end{align}
+
+Considering an unbiased scheme like DRIVE for each user, \eqref{eq:mse-expr} becomes
+
+\begin{align}
+    \mathrm{MSE} &= \frac{1}{m^2}\sum_{i=1}^m\mathrm{MSE}\brak{\vec{x_i}} \\
+                 &= \frac{1}{m}\Theta\brak{r^2}.
+                 \label{eq:mse-drive-srv}
+\end{align}
+
+A better metric is to normalize \eqref{eq:mse-drive-srv} with the squared 2-norm of the true mean. It is possible to achieve lower MSE with shared randomness between users, etc.
+
+\subsection{Stochastic Gradient Descent}
+
+In many machine learning problems, we are given iid samples \(\brak{x_i,y_i}\) according to some unknown distribuion \(p_{XY}\) where the \(y_i\) are observables and \(x_i\) is the quantity to be estimated. The goal is to construct an estimator that minimizes average error. Mathematically, if this estimator be parametrized as \(g_{\vec{\beta}}\brak{y}\), we need to find
+
+\begin{equation}
+    \vec{\beta^*} \triangleq \argmin_{\vec{\beta}}\mean{l\brak{X,g_{\vec{\beta}}\brak{Y}}}.
+    \label{eq:beta-star-def}
+\end{equation}
+
+In \emph{empirical risk minimization}, we restate the problem as
+
+\begin{equation}
+    \vec{\beta^*} = \argmin_{\vec{\beta}}\underbrace{\frac{1}{n}\sum_{i=1}^n l\brak{X_i, g_{\vec{\beta}}\brak{Y_i}}}_{f\brak{\vec{\beta}}}.
+    \label{eq:emp-risk-min}
+\end{equation}
+
+It is computationally expensive to calculate \(\vec{\nabla}f\brak{\vec{\beta}}\). Hence, at each step we compute a \emph{stochastic gradient} \(\vec{h}\brak{\vec{\beta}}\) satisfying
+
+\begin{equation}
+    \mean{\vec{h}\brak{\vec{\beta}}} = \brak{\vec{\nabla}f}\brak{\vec{\beta}}\ \forall \vec{\beta} \in \vec{x}.
+    \label{eq:stoc-grad-cond}
+\end{equation}
+
+An example of a stochastic gradient can be (where \(I\sim\mathrm{Unif}\cbrak{1,2,\ldots,n}\))
+
+\begin{equation}
+    \vec{h}\brak{\vec{\beta}} \triangleq \vec{\nabla}_{\vec{\beta}}l\brak{X_I, g_{\vec{\beta}}\brak{Y_I}}.
+    \label{eq:single-stoc-grad}
+\end{equation}
+
+If \(k\) iid samples are taken as above, the average of the individual stochastic gradients is also a stochastic gradient. This is a widely used technique known as \emph{minibatching}.
+
+\subsection{Improving Speed of Minibatch SGD}
+
+Just like the server mean estimation problem, we assume that there are \(k\) distributed GPUs, each with its own dataset \(D_i\). The following scheme is adopted in this problem for iteration \(1 \le t \le T\).
+
+\begin{enumerate}
+    \item The server sends \(\vec{\beta_{t-1}}\) to all GPUs.
+    \item Each GPU computes \(\vec{\nabla}_{\vec{\beta}}l\brak{X_j, g_{\vec{\beta}}\brak{Y_j}}\) for random samples evaluated at \(\vec{\beta}_{t-1}\).
+    \item Server updates
+        \begin{equation}
+            \vec{\beta}_t = \vec{\beta}_{t-1} - \eta_t\frac{1}{k}\sum_{i=1}^k \vec{\nabla}_{\vec{\beta}}l\brak{X_j, g_{\vec{\beta}}\brak{Y_j}}.
+            \label{eq:srv-update}
+        \end{equation}
+\end{enumerate}
+
+In this case, a possible bottleneck is in sending the gradients to the server. Quantization can be a workaround to this bottleneck.
+
+\end{document}
