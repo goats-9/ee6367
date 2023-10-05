@@ -1,0 +1,97 @@
+% To familiarize yourself with this template, the body contains
+% some examples of its use.  Look them over.  Then you can
+% run LaTeX on this file.  After you have LaTeXed this file then
+% you can look over the result either by printing it out with
+% dvips or using xdvi.
+%
+
+\documentclass[twoside]{article}
+%\usepackage{soul}
+\usepackage{./lecnotes_macros}
+
+
+\begin{document}
+%FILL IN THE RIGHT INFO.
+%\lecture{**LECTURE-NUMBER**}{**DATE**}{**LECTURER**}{**SCRIBE**}
+\lecture{12}{5 October 2023}{Shashank Vatedka}{Gautam Singh}
+%\footnotetext{These notes are partially based on those of Nigel Mansell.}
+
+%All figures are to be placed in a separate folder named ``images''
+
+% **** YOUR NOTES GO HERE:
+
+\section{Distributed Stochastic Gradient Descent}
+
+Note that if \(\vec{h_1}\brak{\vec{x}}\) and \(\vec{h_2}\brak{\vec{x}}\) are
+independent stochastic graidents, then \(\frac{1}{2}\brak{\vec{h_1}\brak{\vec{x}} + \vec{h_2}\brak{\vec{x}}}\) is also a stochastic gradient.
+
+\begin{definition}
+    The \textbf{variance} of a stochastic gradient \(\vec{h}\brak{\vec{x}}\) is
+    defined as
+    \begin{equation}
+        \var\brak{\vec{h}\brak{\vec{x}}} \triangleq \mean{\norm{\vec{h}\brak{\vec{x}}-\vec{\nabla}f\brak{\vec{x}}}^2_2}.
+        \label{eq:sg-var-def}
+    \end{equation}
+\end{definition}
+
+Suppose that \(\vec{h_i},\ 1 \le i \le k\) are iid stochastic gradients and \(\var\brak{\vec{h_i}} \le \sigma^2\). Then,
+
+\begin{equation}
+    \vec{\bar{h}} \triangleq \frac{1}{k}\sum_{i=1}^k\vec{h_i}
+    \label{eq:hbar-def}
+\end{equation}
+
+is also a stochastic gradient where \(\var\brak{\vec{\bar{h}}} \le \frac{\sigma^2}{k}\). 
+We can reduce communication costs by quantizing the stochastic gradients. If an
+unbiased quantizer is used, then the quantized graidents will also be stochastic.
+
+\begin{theorem}[Averaged SGD]
+    \label{thm:avg-sgd}
+    Suppose that \(\cX\subset\bR^d\) is a convex set and \(f:\cX\rightarrow\bR\) is a 
+    convex \emph{L-smooth} function, where for some \(L > 0\) and \(\forall\ x,\ y\),
+    \begin{equation}
+        \norm{\vec{\nabla}f\brak{\vec{x}}-\vec{\nabla}f\brak{\vec{y}}}_2 \le L\norm{\vec{x}-\vec{y}}_2.
+        \label{eq:L-smooth}
+    \end{equation}
+    Consider an SGD with initial point \(\vec{x_0}\). Then, let
+    \begin{equation}
+        \sup_{\vec{x}\in\cX}\norm{\vec{x}-\vec{x_0}}_2 \le R
+    \end{equation}
+    and let \(T\) be the number of iterations in the SGD, with learning rate
+    \begin{equation}
+        \eta_t = \frac{1}{L + \frac{1}{\gamma}},\quad \gamma = \frac{R}{\sigma}\sqrt{\frac{2}{T}}
+    \end{equation}
+    where \(\sigma\) is the variance of the stochastic gradient. Suppose the 
+    SGD generates points \(\vec{x_i},\ 1 \le i \le T\). Then,
+    \begin{equation}
+        \mean{f\brak{\frac{1}{T}\sum_{i=1}^T\vec{x_i}}} - \min_{\vec{x}\in\cX}f\brak{\vec{x}} \le R\sqrt{\frac{2\sigma^2}{T}} + \frac{LR^2}{T}
+    \end{equation}
+\end{theorem}
+
+Notice that for large \(T\) and \(\sigma^2 = 0\), the averaged SGD converges 
+to the true minimum.
+
+Note also that the speed of SGD depends on
+
+\begin{enumerate}
+    \item Time to compute \emph{unquantized} stochastic gradients \(\vec{h_i}\).
+    \item Time complexity of \emph{quantization} for the gradients.
+    \item Number of GPUs used and resources available.
+    \item Total communication time.
+\end{enumerate}
+
+In these settings, the preferred quantization method is \(k\)-bit randomized
+rounding, since it is unbiased, and also
+
+\begin{equation}
+    \mean{\norm{Q\brak{\vec{x}}}_0} \le 2^k\brak{2^k + \sqrt{d}}.
+    \label{eq:rr-L0-bound}
+\end{equation}
+
+That is, the quantized \(\vec{x}\) is sparse. Hence, we can send the values and 
+locations. The total number of bits needed is thus
+\begin{equation}
+    B \le k\sqrt{d} + \log\binom{d}{k\sqrt{d}} \le k\sqrt{d}+ \sqrt{d}\log d \le \cO\brak{\sqrt{d}\log d}
+    \label{eq:num-bits-sparse}
+\end{equation}
+\end{document}
