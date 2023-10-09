@@ -1,0 +1,148 @@
+% To familiarize yourself with this template, the body contains
+% some examples of its use.  Look them over.  Then you can
+% run LaTeX on this file.  After you have LaTeXed this file then
+% you can look over the result either by printing it out with
+% dvips or using xdvi.
+%
+
+\documentclass[twoside]{article}
+%\usepackage{soul}
+\usepackage{./lecnotes_macros}
+
+
+\begin{document}
+%FILL IN THE RIGHT INFO.
+%\lecture{**LECTURE-NUMBER**}{**DATE**}{**LECTURER**}{**SCRIBE**}
+\lecture{9}{25 September 2023}{Shashank Vatedka}{Gautam Singh}
+%\footnotetext{These notes are partially based on those of Nigel Mansell.}
+
+%All figures are to be placed in a separate folder named ``images''
+
+% **** YOUR NOTES GO HERE:
+
+\section{Performance of DRIVE}
+
+We have seen that
+
+\begin{equation}
+    \vec{Rx} \sim \mathrm{Unif}\brak{\bS\brak{\vec{0},\norm{\vec{x}}_2^2}}.
+    \label{eq:rx-dis}
+\end{equation}
+
+Consider 
+
+\begin{equation}
+    \vec{U} \triangleq \frac{\vec{Z}}{\norm{\vec{Z}}_2}
+    \label{eq:u-def}
+\end{equation}
+
+where \(\vec{Z}\sim\cN\brak{\vec{0},1}\). Then,
+
+\begin{equation}
+    \vec{U} \sim \mathrm{Unif}\brak{\bS\brak{\vec{0},1}}.
+    \label{eq:u-pdf}
+\end{equation}
+
+Notice that
+
+\begin{equation}
+    f_{\vec{U}|\norm{\vec{Z}}_2=r}\brak{\vec{u}} =  f_{\vec{U}}\brak{u} =
+    \begin{cases}
+        \frac{1}{\mathrm{Ar}\brak{\bS\brak{\vec{0},1}}} & \norm{u} = 1 \\
+        0 & \mathrm{else}
+    \end{cases}
+    \label{eq:uz-ind}
+\end{equation}
+
+so that \(\vec{U}\) and \(\norm{\vec{Z}}_2\) are statistically independent.
+Thus, from \eqref{eq:u-def},
+
+\begin{align}
+    \vec{U}\norm{\vec{Z}}_2 &= \vec{Z} \\
+    \norm{\vec{U}}_1\norm{\vec{Z}}_2 &= \norm{\vec{Z}}_1 \\
+    \norm{\vec{U}}_1 &= \frac{\norm{\vec{Z}}_2}{\norm{\vec{Z}}_1}.
+    \label{eq:ul1-z}
+\end{align}
+
+Clearly, the 2-norm of \(\vec{Z}\) and 1-norm of \(\vec{U}\) are statistically 
+independent.
+
+Note that
+
+\begin{align}
+    \mean{\norm{\vec{Z}}_1^2} &= \mean{\brak{\sum_{i=1}^d\abs{Z_i}}^2} \\
+                              &= \mean{\sum_{i=1}^d\sum_{j=1}^d\abs{Z_i}\abs{Z_j}} \\
+                              &= \mean{\sum_{i=1}^d\abs{Z_i}^2 + \sum_{i=1}^d\sum_{j=1,\ j\neq i}^d\abs{Z_i}\abs{Z_j}} \\
+                              &= d + \sum_{i=1}^d\sum_{j=1,\ j\neq i}\mean{\abs{Z_i}\abs{Z_j}} \\
+                              &= d + d\brak{d-1}\frac{2}{\pi}
+                              \label{eq:mean-L1z-sq}
+\end{align}
+
+since
+
+\begin{align}
+    \mean{\abs{Z_i}} &= \int_{-\infty}^{\infty}\abs{z_i}\frac{e^{-\frac{z_i^2}{2}}}{\sqrt{2\pi}} dz_i \\
+                     &= 2\int_{0}^{\infty} z_i \frac{e^{-\frac{z_i^2}{2}}}{\sqrt{2\pi}}dz_i \\
+                     &= \sqrt{\frac{2}{\pi}}\int_0^{\infty}e^{-y}dy = \sqrt{\frac{2}{\pi}}
+                     \label{eq:mean-absz}
+\end{align}
+
+where we make the change of variables \(y \triangleq \frac{z_i^2}{2}\). Using
+\eqref{eq:mean-L1z-sq},
+
+\begin{align}
+    \mean{\norm{\vec{U}}_1^2} &= \frac{\mean{\norm{\vec{Z}}_1^2}}{\norm{\vec{Z}}_2^2} \\
+                              &= \frac{d + d\brak{d-1}\frac{2}{pi}}{d} = 1 + \brak{d-1}\frac{2}{\pi}
+                              \label{eq:mean-L1u-sq}
+\end{align}
+
+Using \eqref{eq:mean-L1u-sq}, for any norm \(\norm{\vec{x}}_2^2\) and taking \(d \to \infty\), we obtain
+
+\begin{equation}
+    \mathrm{MSE} = \brak{1-\frac{2}{\pi}}\norm{\vec{x}}_2^2.
+    \label{eq:mse-drive}
+\end{equation}
+
+\section{Generating a Uniform Rotation Matrix}
+
+We can generate
+
+\begin{equation}
+    \vec{A}_{d\times d} \sim \cN\brak{0,1}
+    \label{eq:A-def}
+\end{equation}
+
+and perform Gram-Schmidt orthogonalization of take a \(QR\)-decomposition to 
+obtain the orthonormal matrix \(Q\).
+
+\begin{lemma}
+    If \(\vec{A}\) is a randomly generated \(d\times d\) matrix with all 
+    entries drawn independently from the standard normal distribution, then
+    \(\vec{A}=\vec{QR}\) where \(\vec{Q}\) is a uniform rotation matrix.
+\end{lemma}
+
+\section{Structured Random Rotation Matrices}
+
+It is costly to share \(\cO\brak{d^2}\) bits. We present an alternate choice of
+\(\vec{R}\) that does incur a higher MSE but shares less randomness. We define
+
+\begin{equation}
+\vec{R} \triangleq \frac{1}{\sqrt{d}}\vec{H}_l\vec{D}
+    \label{eq:r-alt-def}
+\end{equation}
+
+where we assume that \(d = 2^l\) for some nonnegative integer \(l\) and \(\vec{H}_l\)
+is the \(d\)-dimensional \emph{Walsh-Hadamard} matrix, which is recursively defined
+as
+
+\begin{align}
+    \vec{H}_1 &= \myvec{1 & 1 \\ 1 & -1} \\
+    \vec{H}_l &= \myvec{\vec{H}_{l-1} & \vec{H}_{l-1} \\ \vec{H}_{l-1} & -\vec{H}_{l-1}}
+    \label{eq:wh-def}
+\end{align}
+
+and \(\vec{D}\) is a diagonal matrix with iid Rademacher \(\cbrak{1,-1}\) entries.
+
+Using this choice of \(\vec{R}\), the overall complexity reduces to \(\cO\brak{d\log{d}}\) and the MSE is still \(\Theta\brak{\norm{\vec{x}}_2^2}\).
+
+\end{document}
