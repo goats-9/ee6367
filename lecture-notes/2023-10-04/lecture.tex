@@ -26,17 +26,17 @@ We consider some applications of quantization in real-world problems.
 
 \subsection{Mean Estimation by a Server}
 
-Suppose there are \(m\) users \(U_i\), each containing a data point \(\vec{x_i} \in \bR^d\) where \(\norm{\vec{x_i}}\le r\). Consider a separate server that wants to compute the mean estimate \(\bar{\vec{X}}\) from the \(\vec{x_i}\), where we define
+Suppose there are \(m\) users \(U_i\), each containing a data point \(\vec{x_i} \in \bR^d\) where \(\norm{\vec{x_i}} \le r\). Consider a separate server that wants to compute the mean estimate \(\vec{\bar{X}}\) from the \(\vec{x_i}\), where we define
 
 \begin{equation}
-    \bar{\vec{X}} \triangleq \frac{1}{m}\sum_{i=1}^m \vec{x_i}.
+    \vec{\bar{X}} \triangleq \frac{1}{m}\sum_{i=1}^m \vec{x_i}.
     \label{eq:Xbar-def}
 \end{equation}
 
 The goal is to minimise the \emph{mean squared error}, defined as
 
 \begin{equation}
-    \mathrm{MSE}\brak{\vec{x_1},\ldots,\vec{x_n}} \triangleq \mean{\norm{\hat{\vec{X}}-\bar{\vec{X}}}^2}.
+    \mathrm{MSE}\brak{\vec{x_1},\ldots,\vec{x_n}} \triangleq \mean{\norm{\hat{\vec{\bar{X}}}-\bar{\vec{X}}}^2}.
     \label{eq:mse-def}
 \end{equation}
 
