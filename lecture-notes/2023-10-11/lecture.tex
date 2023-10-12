@@ -48,7 +48,7 @@ and hence \(U_i \sim \mathrm{Unif}\sbrak{0,1}\).
 Now, each user \(i\) transmits
 
 \begin{equation}
-    Y_i \triangleq \mathbb{1}_{\cbrak{U_i\le x_i}}.
+    Y_i \triangleq \mathbbm{1}_{\cbrak{U_i\le x_i}}.
     \label{eq:Yi-def}
 \end{equation}
 
@@ -70,7 +70,7 @@ a claim for the MSE of this scheme.
     \begin{align}
         z_i &\triangleq \frac{\floor{mx_i}}{m} \label{eq:zi-def} \\
         Y_i &\triangleq Q_i\brak{x_i} \label{eq:Yi-qi-def} \\
-        Q_i\brak{t} &\triangleq \mathbb{1}_{\cbrak{U_i<{t}}} \label{eq:Qi-def}
+        Q_i\brak{t} &\triangleq \mathbbm{1}_{\cbrak{U_i<{t}}} \label{eq:Qi-def}
     \end{align}
 
     The MSE is given by
@@ -78,7 +78,7 @@ a claim for the MSE of this scheme.
         \mathrm{MSE} &= \mean{\brak{\frac{1}{m}\sum_{i=1}^mY_i - \frac{1}{m}\sum_{i=1}^mx_i}^2} \\
                      &= \frac{1}{m^2}\mean{\brak{\sum_{i=1}^m\brak{Y_i-x_i}}^2} \\
                      &= \frac{1}{m^2}\mean{\brak{\sum_{i=1}^m\brak{\brak{x_i-z_i}+\brak{z_i-Q_i\brak{z_i}}+\brak{Q_i\brak{z_i}-Q_i\brak{x_i}}}}^2} \label{eq:sum-three} \\
-                     &\le \frac{3}{m^2}\cbrak{\mean{\sum_{i=1}^m\brak{x_i-z_i}}^2+\mean{\sum_{i=1}^m\brak{z_i-Q_i\brak{z_i}}}^2+\mean{\sum_{i=1}^m\brak{Q_i\brak{z_i}-Q_i\brak{x_i}}}^2} \\
+                     &\le \frac{3}{m^2}\cbrak{\mean{\brak{\sum_{i=1}^m\brak{x_i-z_i}}^2}+\mean{\brak{\sum_{i=1}^m\brak{z_i-Q_i\brak{z_i}}}^2}+\mean{\brak{\sum_{i=1}^m\brak{Q_i\brak{z_i}-Q_i\brak{x_i}}}^2}} \\
     \end{align}
 
     where we use in \eqref{eq:sum-three} the inequality
@@ -95,7 +95,7 @@ a claim for the MSE of this scheme.
     \end{equation}
     hence
     \begin{equation}
-        \mean{\sum_{i=1}^m\brak{x_i-z_i}}^2 \le 1.
+        \mean{\brak{\sum_{i=1}^m\brak{x_i-z_i}}^2} \le 1.
         \label{eq:term-1}
     \end{equation}
 

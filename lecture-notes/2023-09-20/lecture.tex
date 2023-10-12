@@ -22,7 +22,9 @@
 
 \section{Quantization of Vectors}
 
-In this situation, we must quantize high-dimensional vectors \(\vec{x}\in\bR^d\) using \(k\) bits, and recover a lossy version \(\vec{\hat{X}}\). Further, we assume that \(\norm{\vec{x}}\) is upper bounded.
+In this situation, we must quantize high-dimensional vectors \(\vec{x}\in\bR^d\)
+using \(k\) bits, and recover a lossy version \(\vec{\hat{X}}\). Further, we
+assume that \(\norm{\vec{x}}\) is upper bounded.
 
 We use the algorithms for quantization of real numbers as follows. Define
 
@@ -32,7 +34,9 @@ We use the algorithms for quantization of real numbers as follows. Define
     \label{eq:x-min-max-def}
 \end{align}
 
-Now, since each coordinate lies between \(x_{\mathrm{min}}\) and \(x_{\mathrm{max}}\), we can apply the previous algorithms. For example, using deterministic rounding,
+Now, since each coordinate lies between \(x_{\mathrm{min}}\) and
+\(x_{\mathrm{max}}\), we can apply the previous algorithms. For example, using
+deterministic rounding,
 
 \begin{align}
     \mathrm{Cost} &= \max_{\norm{\vec{x}} \le r} \mean{\norm{\vec{\hat{X}}-\vec{x}}^2} \\
@@ -48,25 +52,34 @@ In general, for any scalar quantizer with MSE \(m\), the cost is
     \label{eq:cost-scalar}
 \end{equation}
 
-The \emph{time complexity} of applying such algorithms is \(\cO\brak{dT}\), where \(T\) is the time complexity for applying the scalar version of the algorithm, usually a constant-time algorithm. Thus, the time complexity usually grows linearly with \(d\).
+The \emph{time complexity} of applying such algorithms is \(\cO\brak{dT}\),
+where \(T\) is the time complexity for applying the scalar version of the
+algorithm, usually a constant-time algorithm. Thus, the time complexity usually
+grows linearly with \(d\).
 
 \section{Lower Bound on Cost for Deterministic Algorithms}
 
-Assume in this situation that \(k = \Theta\brak{d} = d\alpha\). Since the algorithm is deterministic, each \(k\)-bit sequence represents one point in space. Denote the \textbf{codebook} of the chosen point vectors and their corresponding \(k\)-bit sequence as \(\bC\). Clearly, given \(\bC\), the optimal encoding rule corresponds to searching for nearest neighbours, that is
+Assume in this situation that \(k = \Theta\brak{d} = d\alpha\). Since the
+algorithm is deterministic, each \(k\)-bit sequence represents one point in
+space. Denote the \textbf{codebook} of the chosen point vectors and their
+corresponding \(k\)-bit sequence as \(\bC\). Clearly, given \(\bC\), the optimal
+encoding rule corresponds to searching for nearest neighbours, that is
 
 \begin{equation}
     \mathrm{Enc}\brak{\vec{x}} = \argmin_{\vec{y}\in\bC}\norm{\vec{x}-\vec{y}}.
     \label{eq:enc-opt}
 \end{equation}
 
-Denote the cost of a codebook \(\bC\) as
+Denote the \textbf{cost} of a codebook \(\bC\) as
 
 \begin{equation}
     \beta^2 \triangleq \mathrm{Cost} = \max_{\vec{x}\in\cB\brak{r}}\min_{\vec{y}\in\bC}\norm{\vec{x}-\vec{y}}^2.
     \label{eq:cost-codebook}
 \end{equation}
 
-For every \(\vec{x}\in\cB\brak{r}\), it follows that there exists at least one codeword at distance at most \(\beta\). Hence, the union of the small balls of radius \(\beta\) covers the larger ball of radius \(r\). Thus,
+For every \(\vec{x}\in\cB\brak{r}\), it follows that there exists at least one
+codeword at distance at most \(\beta\). Hence, the union of the small balls of
+radius \(\beta\) covers the larger ball of radius \(r\). Thus,
 
 \begin{align}
     \bigcup_{\vec{y}\in\bC}\cB\brak{\vec{y},\beta} &\supset \cB\brak{\vec{0},r} \\
@@ -76,6 +89,7 @@ For every \(\vec{x}\in\cB\brak{r}\), it follows that there exists at least one c
     \label{eq:opt-cost-det}
 \end{align}
 
-Comparing with \eqref{eq:det-cost}, we see that \eqref{eq:opt-cost-det} is better by a factor of \(d\).
+Comparing with \eqref{eq:det-cost}, we see that \eqref{eq:opt-cost-det} is
+better by a factor of \(d\).
 
 \end{document}

@@ -92,11 +92,12 @@ where we make the change of variables \(y \triangleq \frac{z_i^2}{2}\). Using
 
 \begin{align}
     \mean{\norm{\vec{U}}_1^2} &= \frac{\mean{\norm{\vec{Z}}_1^2}}{\norm{\vec{Z}}_2^2} \\
-                              &= \frac{d + d\brak{d-1}\frac{2}{pi}}{d} = 1 + \brak{d-1}\frac{2}{\pi}
+                              &= \frac{d + d\brak{d-1}\frac{2}{pi}}{d} = 1 + \brak{d-1}\frac{2}{\pi}.
                               \label{eq:mean-L1u-sq}
 \end{align}
 
-Using \eqref{eq:mean-L1u-sq}, for any norm \(\norm{\vec{x}}_2^2\) and taking \(d \to \infty\), we obtain
+Using \eqref{eq:mean-L1u-sq}, for any norm \(\norm{\vec{x}}_2^2\) and taking \(d
+\to \infty\), we obtain
 
 \begin{equation}
     \mathrm{MSE} = \brak{1-\frac{2}{\pi}}\norm{\vec{x}}_2^2.
@@ -131,9 +132,9 @@ It is costly to share \(\cO\brak{d^2}\) bits. We present an alternate choice of
     \label{eq:r-alt-def}
 \end{equation}
 
-where we assume that \(d = 2^l\) for some nonnegative integer \(l\) and \(\vec{H}_l\)
-is the \(d\)-dimensional \emph{Walsh-Hadamard} matrix, which is recursively defined
-as
+where we assume that \(d = 2^l\) for some nonnegative integer \(l\) and
+\(\vec{H}_l\) is the \(d\)-dimensional \emph{Walsh-Hadamard} matrix, which is
+recursively defined as
 
 \begin{align}
     \vec{H}_1 &= \myvec{1 & 1 \\ 1 & -1} \\
@@ -141,8 +142,10 @@ as
     \label{eq:wh-def}
 \end{align}
 
-and \(\vec{D}\) is a diagonal matrix with iid Rademacher \(\cbrak{1,-1}\) entries.
+and \(\vec{D}\) is a diagonal matrix with iid Rademacher \(\cbrak{1,-1}\)
+entries.
 
-Using this choice of \(\vec{R}\), the overall complexity reduces to \(\cO\brak{d\log{d}}\) and the MSE is still \(\Theta\brak{\norm{\vec{x}}_2^2}\).
+Using this choice of \(\vec{R}\), the overall complexity reduces to
+\(\cO\brak{d\log{d}}\) and the MSE is still \(\Theta\brak{\norm{\vec{x}}_2^2}\).
 
 \end{document}

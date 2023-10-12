@@ -22,7 +22,8 @@
 
 \section{Vector Quantization Using Shared Randomness}
 
-Suppose that \(\vec{X} \sim \mathrm{iid}\brak{\cN\brak{\vec{0},\beta^2}}\). Then,
+Suppose that \(\vec{X} \sim \mathrm{iid}\brak{\cN\brak{\vec{0},\beta^2}}\).
+Then,
 
 \begin{align}
     \mean{\norm{\vec{X}}^2} &= \mean{\sum_{i=1}^dX_i^2} \\
@@ -57,10 +58,12 @@ For these schemes, a careful analysis shows
     \label{eq:cost-rot}
 \end{equation}
 
-However, a small tweak to the above scheme can lead to better performance.
-Assume that \(k = d\brak{1+\cO{1}}\). The encoder takes a random rotation vector
-\(\vec{R}\) and computes \(\vec{y} = \vec{Rx}\), and the vector \(\vec{c}\)
-is transmitted, where
+\section{The DRIVE Algorithm}
+
+A small tweak to the above scheme can lead to better performance. Assume that
+\(k = d\brak{1+\cO{1}}\). The encoder takes a random rotation vector \(\vec{R}\)
+and computes \(\vec{y} = \vec{Rx}\), and the vector \(\vec{c}\) is transmitted,
+where
 
 \begin{equation}
     c_i \triangleq \mathrm{sign}\brak{y_i} =
@@ -71,7 +74,8 @@ is transmitted, where
     \label{eq:ci-def}
 \end{equation}
 
-Along with \(\vec{c}\), a scale factor \(s\in\bR\) is also transmitted.
+Along with \(\vec{c}\), a scale factor \(s\in\bR\) is also transmitted. This
+scheme is known as DRIVE (Deterministically RoundIng randomly rotated VEctors).
 
 Given \(\vec{c}\) and \(s\), the decoder computes
 
@@ -94,6 +98,7 @@ The squared error of this scheme is given by
                                      &\ge \norm{\vec{x}}_2^2 - \frac{\norm{\vec{Rx}}_1^2}{d} = \theta{\norm{\vec{x}}_2^2}
 \end{align}
 
-where the minimum is achieved at \(s_{\mathrm{min}} = \frac{\norm{\vec{Rx}}_1}{d}\).
+where the minimum is achieved at \(s_{\mathrm{min}} =
+\frac{\norm{\vec{Rx}}_1}{d}\).
 
 \end{document}

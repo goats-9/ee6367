@@ -26,11 +26,11 @@ Suppose that \(\vec{x}\in\bR^d\) is sparse and has \(s\) nonzero entries. To
 encode \(\vec{x}\), we send the locations of the nonzero coordinates using
 \(\log_2\binom{d}{s}\) bits and separately encode the nonzero values.
 
-The \emph{Elias code} is used to encode a positive integer \(K\). In this
-scheme of codes, we need \(\ceil{\log_2 K}\) bits for the integer, and
-prepend it with \(\ceil{\ceil{\log_2 K}}\) bits for the length, and so on.
-The first set will be a \emph{unary code}, where any positive integer \(L\)
-is encoded as \(0^{L}1\). The final 1 is to delimit the unary code.
+The \emph{Elias code} is used to encode a positive integer \(K\). In this scheme
+of codes, we need \(\ceil{\log_2 K}\) bits for the integer, and prepend it with
+\(\ceil{\log_2 \ceil{\log_2 K}}\) bits for the length, and so on. The first set
+will be a \emph{unary code}, where any positive integer \(L\) is encoded as
+\(0^{L}1\). The final 1 is to delimit the unary code.
 
 The Elias code is faster than entropy-based codes such as Huffman or
 Arithmetic codes. Thus, it is preferred for cases like SGD where the time
@@ -53,12 +53,13 @@ Suppose that \(x_1 = x_2 = x\). The MSE is then
 where we have
 
 \begin{align}
-    \mean{\hat{x_1}\hat{x_2}} &= \mean{\mathbb{1}_{\cbrak{U_1 < x_1}}\mathbb{1}_{\cbrak{U_2 < x_2}}} \\
+    \mean{\hat{x_1}\hat{x_2}} &= \mean{\mathbbm{1}_{\cbrak{U_1 < x_1}}\mathbbm{1}_{\cbrak{U_2 < x_2}}} \\
                               &= \pr{U_1 < x_1,\ U_2 < x_2} \\
                               &= \pr{1 - x < U_1 < x} = \sbrak{2x-1}_{+}
                               \label{eq:mean-prod}
 \end{align}
 
-Observe that this MSE is better than that produced by two iid uniform random variables.
+Observe that this MSE is better than that produced by two iid uniform random
+variables.
 
 \end{document}

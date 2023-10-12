@@ -25,7 +25,7 @@
 Suppose we have to encode \(x\in\sbrak{0,1}\) using a single bit \(c\in\cbrak{0,1}\). Let the decoded output be \(\hat{x}\). We require to minimize the \emph{distortion} which is taken to be the maximum squared error
 
 \begin{equation}
-    \mathrm{Max-SE} = \max_{x\in\sbrak{0,1}}\brak{x-\hat{x}}^2.
+    \mathrm{MaxSE} = \max_{x\in\sbrak{0,1}}\brak{x-\hat{x}}^2.
     \label{eq:max-se}
 \end{equation}
 
@@ -104,10 +104,12 @@ This is called \emph{deterministic rounding} and has a maximum squared error of 
 
     Now, choosing \(x=\frac{1}{2}\), and using \eqref{eq:xhat-0} and \eqref{eq:xhat-1},
     \begin{align}
-        \mean{\brak{\hat{X}-\frac{1}{2}}^2|x=\frac{1}{2}} &= \mean{\brak{\hat{X}_0 - \frac{1}{2}}^2|x=\frac{1}{2},\ c=0}p_c\brak(0) + \mean{\brak{\hat{X}_1-\frac{1}{2}}^2|x=\frac{1}{2},\ c=1}p_c\brak{1} \\
+        \mean{\brak{\hat{X}-\frac{1}{2}}^2|x=\frac{1}{2}} &= \mean{\brak{\hat{X}_0 - \frac{1}{2}}^2|x=\frac{1}{2},\ c=0}p_c\brak{0} + \mean{\brak{\hat{X}_1-\frac{1}{2}}^2|x=\frac{1}{2},\ c=1}p_c\brak{1} \\
                                                           &\ge \brak{\mean{\hat{X}_0-\frac{1}{2}|x=\frac{1}{2},\ c=0}}^2p_c\brak{0} + \brak{\mean{\hat{X}_1-\frac{1}{2}|x=\frac{1}{2},\ c=1}}^2p_c\brak{1} \\
                                                           &\ge \brak{\frac{1}{4}-\frac{1}{2}}^2p_c\brak{0} + \brak{\frac{3}{4}-\frac{1}{2}}^2p_c\brak{1} \ge \frac{1}{16}
+                                                          \label{eq:mse-contradiction}
     \end{align}
+    which is a contradiction. This completes the proof.
 \end{proof}
 
 \end{document}

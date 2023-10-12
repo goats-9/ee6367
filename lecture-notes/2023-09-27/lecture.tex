@@ -23,7 +23,8 @@
 \section{Unbiased Estimation in DRIVE}
 
 \begin{claim}
-    If \(\vec{R}\) is a uniform random rotation and \(s = \frac{\norm{\vec{x}}_2}{\norm{\vec{Rx}}_1}\), then DRIVE is unbiased.
+    If \(\vec{R}\) is a uniform random rotation and \(s =
+    \frac{\norm{\vec{x}}_2}{\norm{\vec{Rx}}_1}\), then DRIVE is unbiased.
 \end{claim}
 
 \begin{proof}
@@ -101,6 +102,7 @@
     \begin{equation}
         \mean{\hat{\vec{X}}} = \vec{x}
     \end{equation}
+    as required.
 \end{proof}
 
 We generalize this scheme.
@@ -115,15 +117,16 @@ We generalize this scheme.
     Then, DRIVE is unbiased with MSE \( = \Theta\brak{\norm{\vec{x}}_2^2}\).
 \end{claim}
 
-However, if structured random rotation is used, then we cannot make the scheme
-unbiased by choosing \(s\).
+However, if \emph{structured} random rotation is used, then we cannot make the
+scheme unbiased by choosing \(s\).
 
 Note that if \(\vec{R}\) is a uniform random rotation or a structured random
 rotation, then \(\vec{y}_i = \vec{Rx}_i\) is approximately Gaussian distributed
 for all \(i\) identically. That is,
 
 \begin{equation}
-    \abs{F_{Y_i}\brak{y}-F_G\brak{y}} \to 0\ d \to \infty\ \forall y \in \bR
+    \abs{F_{Y_i}\brak{y}-F_G\brak{y}} \to 0\ d \to \infty\ \forall\ y \in \bR.
+    \label{eq:y-gauss}
 \end{equation}
 
 \end{document}

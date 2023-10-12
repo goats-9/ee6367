@@ -23,7 +23,9 @@
 \section{Distributed Stochastic Gradient Descent}
 
 Note that if \(\vec{h_1}\brak{\vec{x}}\) and \(\vec{h_2}\brak{\vec{x}}\) are
-independent stochastic graidents, then \(\frac{1}{2}\brak{\vec{h_1}\brak{\vec{x}} + \vec{h_2}\brak{\vec{x}}}\) is also a stochastic gradient.
+independent stochastic graidents, then
+\(\frac{1}{2}\brak{\vec{h_1}\brak{\vec{x}} + \vec{h_2}\brak{\vec{x}}}\) is also
+a stochastic gradient.
 
 \begin{definition}
     The \textbf{variance} of a stochastic gradient \(\vec{h}\brak{\vec{x}}\) is
@@ -34,21 +36,24 @@ independent stochastic graidents, then \(\frac{1}{2}\brak{\vec{h_1}\brak{\vec{x}
     \end{equation}
 \end{definition}
 
-Suppose that \(\vec{h_i},\ 1 \le i \le k\) are iid stochastic gradients and \(\var\brak{\vec{h_i}} \le \sigma^2\). Then,
+Suppose that \(\vec{h_i},\ 1 \le i \le k\) are iid stochastic gradients and
+\(\var\brak{\vec{h_i}} \le \sigma^2\). Then,
 
 \begin{equation}
     \vec{\bar{h}} \triangleq \frac{1}{k}\sum_{i=1}^k\vec{h_i}
     \label{eq:hbar-def}
 \end{equation}
 
-is also a stochastic gradient where \(\var\brak{\vec{\bar{h}}} \le \frac{\sigma^2}{k}\). 
-We can reduce communication costs by quantizing the stochastic gradients. If an
-unbiased quantizer is used, then the quantized graidents will also be stochastic.
+is also a stochastic gradient where \(\var\brak{\vec{\bar{h}}} \le
+\frac{\sigma^2}{k}\). We can reduce communication costs by quantizing the
+stochastic gradients. If an unbiased quantizer is used, then the quantized
+graidents will also be stochastic.
 
 \begin{theorem}[Averaged SGD]
     \label{thm:avg-sgd}
-    Suppose that \(\cX\subset\bR^d\) is a convex set and \(f:\cX\rightarrow\bR\) is a 
-    convex \emph{L-smooth} function, where for some \(L > 0\) and \(\forall\ x,\ y\),
+    Suppose that \(\cX\subset\bR^d\) is a convex set and \(f:\cX\rightarrow\bR\)
+    is a convex \emph{L-smooth} function, where for some \(L > 0\) and
+    \(\forall\ x,\ y\),
     \begin{equation}
         \norm{\vec{\nabla}f\brak{\vec{x}}-\vec{\nabla}f\brak{\vec{y}}}_2 \le L\norm{\vec{x}-\vec{y}}_2.
         \label{eq:L-smooth}
@@ -91,7 +96,7 @@ rounding, since it is unbiased, and also
 That is, the quantized \(\vec{x}\) is sparse. Hence, we can send the values and 
 locations. The total number of bits needed is thus
 \begin{equation}
-    B \le k\sqrt{d} + \log\binom{d}{k\sqrt{d}} \le k\sqrt{d}+ \cO\brak{\sqrt{d}\log d} \le \cO\brak{\sqrt{d}\log d}
+    B \le k\sqrt{d} + \log\binom{d}{k\sqrt{d}} \le k\sqrt{d}+ \cO\brak{\sqrt{d}\log d} \le \cO\brak{\sqrt{d}\log d}.
     \label{eq:num-bits-sparse}
 \end{equation}
 \end{document}
