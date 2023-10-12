@@ -13,14 +13,14 @@
 \begin{document}
 %FILL IN THE RIGHT INFO.
 %\lecture{**LECTURE-NUMBER**}{**DATE**}{**LECTURER**}{**SCRIBE**}
-\lecture{13}{9 October 2023}{Shashank Vatedka}{Gautam Singh}
+\lecture{14}{11 October 2023}{Shashank Vatedka}{Gautam Singh}
 %\footnotetext{These notes are partially based on those of Nigel Mansell.}
 
 %All figures are to be placed in a separate folder named ``images''
 
 % **** YOUR NOTES GO HERE:
 
-\section{Stochastic Rounding}
+\section{Correlated Quantization}
 
 We consider stochastic rounding in the case of \(n\) users. Let a random 
 permutation \(\pi\) of \(\cbrak{0,1,\ldots,n-1}\) be shared among the users.
@@ -48,7 +48,7 @@ and hence \(U_i \sim \mathrm{Unif}\sbrak{0,1}\).
 Now, each user \(i\) transmits
 
 \begin{equation}
-    Y_i \triangleq \mathbbm{1}_{\cbrak{U_i\le x_i}}.
+    Y_i \triangleq \mathbbm{1}_{\cbrak{U_i<x_i}}.
     \label{eq:Yi-def}
 \end{equation}
 
@@ -78,7 +78,7 @@ a claim for the MSE of this scheme.
         \mathrm{MSE} &= \mean{\brak{\frac{1}{m}\sum_{i=1}^mY_i - \frac{1}{m}\sum_{i=1}^mx_i}^2} \\
                      &= \frac{1}{m^2}\mean{\brak{\sum_{i=1}^m\brak{Y_i-x_i}}^2} \\
                      &= \frac{1}{m^2}\mean{\brak{\sum_{i=1}^m\brak{\brak{x_i-z_i}+\brak{z_i-Q_i\brak{z_i}}+\brak{Q_i\brak{z_i}-Q_i\brak{x_i}}}}^2} \label{eq:sum-three} \\
-                     &\le \frac{3}{m^2}\cbrak{\mean{\brak{\sum_{i=1}^m\brak{x_i-z_i}}^2}+\mean{\brak{\sum_{i=1}^m\brak{z_i-Q_i\brak{z_i}}}^2}+\mean{\brak{\sum_{i=1}^m\brak{Q_i\brak{z_i}-Q_i\brak{x_i}}}^2}} \\
+                     &\le \frac{3}{m^2}\cbrak{\mean{\brak{\sum_{i=1}^m\brak{x_i-z_i}}^2}+\mean{\brak{\sum_{i=1}^m\brak{z_i-Q_i\brak{z_i}}}^2}+\mean{\brak{\sum_{i=1}^m\brak{Q_i\brak{z_i}-Q_i\brak{x_i}}}^2}}
     \end{align}
 
     where we use in \eqref{eq:sum-three} the inequality
@@ -102,8 +102,68 @@ a claim for the MSE of this scheme.
     Now,
 
     \begin{align}
-        \mean{\brak{\sum_{i=1}^mz_i-Q_i\brak{z_i}}^2} &= \sum_{i=1}^m\mean{\brak{z_i-Q_i\brak{z_i}}^2}
+        \mean{\brak{\sum_{i=1}^mz_i-Q_i\brak{z_i}}^2} &= \sum_{i=1}^m\mean{\brak{z_i-Q_i\brak{z_i}}^2} + \sum_{i=1}^{m}\sum_{\substack{j=1\\j\neq i}}^{m}\mean{\brak{z_i-Q_i\brak{z_i}}\brak{z_j-Q_j\brak{z_j}}} \\
+                                                      &= \sum_{i=1}^m\mean{\brak{z_i-Q_i\brak{z_i}}^2} + \sum_{i=1}^m\sum_{\substack{j=1\\j\neq m}}^m\brak{\mean{Q_i\brak{z_i}Q_j\brak{z_j}}-z_iz_j}
+                                                      \label{eq:term-2-solve}
     \end{align}
+
+    Note that
+
+    \begin{align}
+        Q_i\brak{z_i} &= \mathbbm{1}_{\cbrak{\pi_i+m\gamma_i<mz_i}} \\
+                      &= \mathbbm{1}_{\cbrak{\pi_i<mz_i}}
+                      \label{eq:Qi-alt-def}
+    \end{align}
+
+    and
+
+    \begin{align}
+        \mean{Q_i\brak{z_i}Q_j\brak{z_j}} &= \pr{\pi_i<mz_i,\ \pi_j<mz_j} \\
+                                          &= \min\cbrak{z_i,z_j}\frac{m\max\cbrak{z_i,z_j}-1}{m-1} \\
+                                          &= \frac{mz_iz_j-\min\cbrak{z_i,z_j}}{m-1} \\
+                                          &= \frac{mz_iz_j}{m-1} - \frac{1}{m-1}\brak{\frac{z_i+z_j}{2}-\frac{\abs{z_i-z_j}}{2}}.
+                                          \label{eq:exp-qiqj}
+    \end{align}
+
+    Using \eqref{eq:exp-qiqj} in \eqref{eq:term-2-solve},
+
+    \begin{align}
+        \mean{\brak{\sum_{i=1}^mz_i-Q_i\brak{z_i}}^2} &= \sum_{i=1}^mz_i\brak{1-z_i} + \sum_{i=1}\sum_{\substack{j=1\\j\neq i}}^m \brak{\frac{z_iz_j}{m-1} - \frac{z_i+z_j}{2\brak{m-1}} + \frac{\abs{z_i-z_j}}{2\brak{m-1}}} \\
+                                                      &= \sum_{i=1}^mz_i\brak{1-z_i} + \frac{\brak{\sum_iz_i}^2-\sum_iz_i^2}{m-1} - \sum_iz_i + \sum_{i=1}^m\sum_{\substack{j=1\\j\neq i}}^m\frac{\abs{z_i-z_j}}{2\brak{m-1}} \\
+                                                      &\le \frac{\brak{\sum_iz_i}^2}{m} - \sum_iz_i^2 + \sum_{i=1}^m\sum_{\substack{j=1\\j\neq i}}^m\frac{\abs{z_i-z_j}}{2\brak{m-1}} \\
+                                                      &\le \sum_{\substack{j=1\\j\neq i}}^m\frac{\abs{z_i-z_j}}{2\brak{m-1}} \\
+                                                      &\le \sum_{\substack{j=1\\j\neq i}}^m\frac{\abs{x_i-x_j}+\frac{1}{m}}{2\brak{m-1}} \\
+                                                      &\le \sum_{i=1}^m\sum_{\substack{j=1\\j\neq i}}^m\frac{\abs{x_i-x_j}}{2\brak{m-1}} + \frac{1}{2}.
+                                                      \label{eq:term-2}
+    \end{align}
+
+    Finally, note that
+
+    \begin{equation}
+        Q_i\brak{z_i} = 1 \implies U_i < z_i \le x_i \implies Q_i\brak{x_i} = 1
+        \label{eq:ineq-qz-qx}
+    \end{equation}
+
+    and thus
+
+    \begin{equation}
+        \mean{\brak{\sum_{i=1}^m\brak{Q_i\brak{z_i}-Q_i\brak{x_i}}}^2} \le 2.
+        \label{eq:term-3}
+    \end{equation}
+
+    Putting \eqref{eq:term-1}, \eqref{eq:term-2} and \eqref{eq:term-3} together,
+
+    \begin{align}
+        \mathrm{MSE} &\le \frac{3}{m^2}\brak{4 + \sum_{i=1}^m\sum_{\substack{j=1\\j\neq i}}^m\frac{\abs{x_i-x_j}}{2\brak{m-1}}} \\
+                     &\le \frac{12}{m^2} + \frac{3}{m}\sigma_{md}
+                     \label{eq:mse-claim-proof}
+    \end{align}
+    as desired. It is left as an exercise to show that
+
+    \begin{equation}
+        \sum_{i=1}^m\sum_{\substack{j=1\\j\neq i}}^m\frac{\abs{x_i-x_j}}{2m\brak{m-1}} \le \sigma_{md} = \frac{1}{m}\sum_{i=1}^m\abs{x_i-\bar{x}}.
+        \label{eq:md-ineq}
+    \end{equation}
 \end{proof}
 
 \end{document}
