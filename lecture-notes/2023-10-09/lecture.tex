@@ -1,0 +1,64 @@
+% To familiarize yourself with this template, the body contains
+% some examples of its use.  Look them over.  Then you can
+% run LaTeX on this file.  After you have LaTeXed this file then
+% you can look over the result either by printing it out with
+% dvips or using xdvi.
+%
+
+\documentclass[twoside]{article}
+%\usepackage{soul}
+\usepackage{./lecnotes_macros}
+
+
+\begin{document}
+%FILL IN THE RIGHT INFO.
+%\lecture{**LECTURE-NUMBER**}{**DATE**}{**LECTURER**}{**SCRIBE**}
+\lecture{13}{9 October 2023}{Shashank Vatedka}{Gautam Singh}
+%\footnotetext{These notes are partially based on those of Nigel Mansell.}
+
+%All figures are to be placed in a separate folder named ``images''
+
+% **** YOUR NOTES GO HERE:
+
+\section{Encoding Sparse Vectors}
+
+Suppose that \(\vec{x}\in\bR^d\) is sparse and has \(s\) nonzero entries. To
+encode \(\vec{x}\), we send the locations of the nonzero coordinates using
+\(\log_2\binom{d}{s}\) bits and separately encode the nonzero values.
+
+The \emph{Elias code} is used to encode a positive integer \(K\). In this
+scheme of codes, we need \(\ceil{\log_2 K}\) bits for the integer, and
+prepend it with \(\ceil{\ceil{\log_2 K}}\) bits for the length, and so on.
+The first set will be a \emph{unary code}, where any positive integer \(L\)
+is encoded as \(0^{L}1\). The final 1 is to delimit the unary code.
+
+The Elias code is faster than entropy-based codes such as Huffman or
+Arithmetic codes. Thus, it is preferred for cases like SGD where the time
+complexity is important.
+
+\section{Shared Randomness Among Users}
+
+Suppose that two users \(U_1\) and \(U_2\) use randomized rounding, where 
+\(U_2 = 1 - U_1\). Then, \(U_1\) and \(U_2\) are identically distributed.
+
+Suppose that \(x_1 = x_2 = x\). The MSE is then
+
+\begin{align}
+    \mean{\brak{\frac{\hat{x_1} + \hat{x_2}}{2}-x}^2} &= \frac{1}{4}\mean{\brak{\brak{\hat{x_1}-x}+\brak{\hat{x_2}-x}}^2} \\
+                                                      &= \frac{1}{4}\brak{2x\brak{1-x}+2\mean{\brak{\hat{x_1}-x}\brak{\hat{x_2}-x}}} \\
+                                                      &= \frac{1}{2}\brak{x\brak{1-x}+\sbrak{2x-1}_+ - x^2}
+                                                      \label{eq:mse-shared-rand}
+\end{align}
+
+where we have
+
+\begin{align}
+    \mean{\hat{x_1}\hat{x_2}} &= \mean{\mathbb{1}_{\cbrak{U_1 < x_1}}\mathbb{1}_{\cbrak{U_2 < x_2}}} \\
+                              &= \pr{U_1 < x_1,\ U_2 < x_2} \\
+                              &= \pr{1 - x < U_1 < x} = \sbrak{2x-1}_{+}
+                              \label{eq:mean-prod}
+\end{align}
+
+Observe that this MSE is better than that produced by two iid uniform random variables.
+
+\end{document}

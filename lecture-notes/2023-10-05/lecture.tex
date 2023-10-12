@@ -91,7 +91,7 @@ rounding, since it is unbiased, and also
 That is, the quantized \(\vec{x}\) is sparse. Hence, we can send the values and 
 locations. The total number of bits needed is thus
 \begin{equation}
-    B \le k\sqrt{d} + \log\binom{d}{k\sqrt{d}} \le k\sqrt{d}+ \sqrt{d}\log d \le \cO\brak{\sqrt{d}\log d}
+    B \le k\sqrt{d} + \log\binom{d}{k\sqrt{d}} \le k\sqrt{d}+ \cO\brak{\sqrt{d}\log d} \le \cO\brak{\sqrt{d}\log d}
     \label{eq:num-bits-sparse}
 \end{equation}
 \end{document}

@@ -1,0 +1,109 @@
+% To familiarize yourself with this template, the body contains
+% some examples of its use.  Look them over.  Then you can
+% run LaTeX on this file.  After you have LaTeXed this file then
+% you can look over the result either by printing it out with
+% dvips or using xdvi.
+%
+
+\documentclass[twoside]{article}
+%\usepackage{soul}
+\usepackage{./lecnotes_macros}
+
+
+\begin{document}
+%FILL IN THE RIGHT INFO.
+%\lecture{**LECTURE-NUMBER**}{**DATE**}{**LECTURER**}{**SCRIBE**}
+\lecture{13}{9 October 2023}{Shashank Vatedka}{Gautam Singh}
+%\footnotetext{These notes are partially based on those of Nigel Mansell.}
+
+%All figures are to be placed in a separate folder named ``images''
+
+% **** YOUR NOTES GO HERE:
+
+\section{Stochastic Rounding}
+
+We consider stochastic rounding in the case of \(n\) users. Let a random 
+permutation \(\pi\) of \(\cbrak{0,1,\ldots,n-1}\) be shared among the users.
+User \(i\) is given the number \(\pi_i\) (here the users are 0-indexed). Then,
+each user generates \(\gamma_i \sim \mathrm{Unif}\sbrak{0,\frac{1}{m}}\).
+Note that \(\gamma_i\) is \emph{private randomness}. Define
+
+\begin{equation}
+    U_i \triangleq \frac{\pi_i}{m} + \gamma_i.
+    \label{eq:Ui-def}
+\end{equation}
+
+The CDF of \(U_i\), for \(u \in \sbrak{0,1}\), is
+
+\begin{align}
+    \pr{U_i\le u} &= \pr{\frac{\pi_i}{m}+ \gamma_i \le u} \\
+                  &= \pr{\pi_i + m\gamma_i \le mu} \\
+                  &= \pr{\pi_i < \floor{mu}} + \pr{\pi_i = \floor{mu},\ m\gamma_i \le \mu - \floor{mu}} \\
+                  &= \frac{\floor{mu}}{m} + \frac{mu-\floor{mu}}{m} = u
+                  \label{eq:ui-cdf}
+\end{align}
+
+and hence \(U_i \sim \mathrm{Unif}\sbrak{0,1}\).
+
+Now, each user \(i\) transmits
+
+\begin{equation}
+    Y_i \triangleq \mathbb{1}_{\cbrak{U_i\le x_i}}.
+    \label{eq:Yi-def}
+\end{equation}
+
+Clearly, this scheme is unbiased because \(\mean{Y_i} = x_i\). We now present
+a claim for the MSE of this scheme.
+
+\begin{claim}
+    For the above scheme, the MSE is upper bounded by \(\frac{3}{m}\sigma_{md} + \frac{12}{m^2}\), where
+
+    \begin{equation}
+        \sigma_{md} \triangleq \frac{1}{m}\sum_{i=1}^m\abs{x_i-\bar{x}} \le \sqrt{\frac{1}{m}\sum_{i=1}^m\brak{x_i-\bar{x}}^2}.
+        \label{eq:sigma-md-def}
+    \end{equation}
+\end{claim}
+
+\begin{proof}
+    Define
+
+    \begin{align}
+        z_i &\triangleq \frac{\floor{mx_i}}{m} \label{eq:zi-def} \\
+        Y_i &\triangleq Q_i\brak{x_i} \label{eq:Yi-qi-def} \\
+        Q_i\brak{t} &\triangleq \mathbb{1}_{\cbrak{U_i<{t}}} \label{eq:Qi-def}
+    \end{align}
+
+    The MSE is given by
+    \begin{align}
+        \mathrm{MSE} &= \mean{\brak{\frac{1}{m}\sum_{i=1}^mY_i - \frac{1}{m}\sum_{i=1}^mx_i}^2} \\
+                     &= \frac{1}{m^2}\mean{\brak{\sum_{i=1}^m\brak{Y_i-x_i}}^2} \\
+                     &= \frac{1}{m^2}\mean{\brak{\sum_{i=1}^m\brak{\brak{x_i-z_i}+\brak{z_i-Q_i\brak{z_i}}+\brak{Q_i\brak{z_i}-Q_i\brak{x_i}}}}^2} \label{eq:sum-three} \\
+                     &\le \frac{3}{m^2}\cbrak{\mean{\sum_{i=1}^m\brak{x_i-z_i}}^2+\mean{\sum_{i=1}^m\brak{z_i-Q_i\brak{z_i}}}^2+\mean{\sum_{i=1}^m\brak{Q_i\brak{z_i}-Q_i\brak{x_i}}}^2} \\
+    \end{align}
+
+    where we use in \eqref{eq:sum-three} the inequality
+
+    \begin{equation}
+        \brak{\alpha+\beta+\gamma}^2 \le 3\brak{\alpha^2+\beta^2+\gamma^2}.
+        \label{eq:sum-three-ineq}
+    \end{equation}
+    for reals \(\alpha,\beta,\gamma\).
+
+    Note that
+    \begin{equation}
+        x_i-z_i = x_i - \frac{\floor{mx_i}}{m} = \frac{mx_i - \floor{mx_i}}{m} \le \frac{1}{m},
+    \end{equation}
+    hence
+    \begin{equation}
+        \mean{\sum_{i=1}^m\brak{x_i-z_i}}^2 \le 1.
+        \label{eq:term-1}
+    \end{equation}
+
+    Now,
+
+    \begin{align}
+        \mean{\brak{\sum_{i=1}^mz_i-Q_i\brak{z_i}}^2} &= \sum_{i=1}^m\mean{\brak{z_i-Q_i\brak{z_i}}^2}
+    \end{align}
+\end{proof}
+
+\end{document}
