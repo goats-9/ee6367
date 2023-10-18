@@ -1,0 +1,118 @@
+% To familiarize yourself with this template, the body contains
+% some examples of its use.  Look them over.  Then you can
+% run LaTeX on this file.  After you have LaTeXed this file then
+% you can look over the result either by printing it out with
+% dvips or using xdvi.
+%
+
+\documentclass[twoside]{article}
+%\usepackage{soul}
+\usepackage{./lecnotes_macros}
+
+
+\begin{document}
+%FILL IN THE RIGHT INFO.
+%\lecture{**LECTURE-NUMBER**}{**DATE**}{**LECTURER**}{**SCRIBE**}
+\lecture{17}{18 October 2023}{Shashank Vatedka}{Gautam Singh}
+%\footnotetext{These notes are partially based on those of Nigel Mansell.}
+
+%All figures are to be placed in a separate folder named ``images''
+
+% **** YOUR NOTES GO HERE:
+
+\section{The FL Process}
+
+Let \(M_t^{\brak{g}}\) denote the \emph{global model} at round \(t\), in the 
+server. The steps in each round of federated learning (FL) are as follows.
+
+\begin{enumerate}
+    \item \textbf{Client Selection:} Clients are sampled uniformly at random.
+    \item \textbf{Broadcast:} Send \(M_t^{\brak{g}}\) to the selected users.
+    We usually assume that this step is noiseless.
+    \item \textbf{Client Computation:} Each user \(i\) runs optimization 
+    algorithm and gets the \emph{local model} \(M_t{i}\), which is
+    transmitted to the server. Here, we assume that each client runs SGD
+    on \(n_i\) non-iid samples.
+    \item \textbf{Aggregation:} Server gets \(M_t^{\brak{i}}\) for all users
+    \(i\) that have not dropped out. We assume that this aggregation is 
+    noiseless. Note that user \(i\) can send its local model or the 
+    difference between its local model and the global model. Usually, the
+    difference is sparse and has a small norm.
+    \item \textbf{Model Update:} Server updates
+    \begin{equation}
+        M_{t+1}^{\brak{g}} \leftarrow f\brak{\cbrak{M_t^{\brak{i}}:i}}
+        \label{eq:update-gen}
+    \end{equation}
+    Usually, a weighted average of the local models is taken.
+\end{enumerate}
+
+\section{Federated Averaging}
+
+At user \(i\):
+
+\begin{enumerate}
+    \item Receive \(M_t^{\brak{g}}\).
+    \item For \(j \in \cbrak{1,2,\ldots,N_e}\):
+    (here, \(N_e\) is the \emph{number of epochs})
+    \begin{enumerate}
+        \item Run minibatch SGD for \(N_m\) batch size
+        \begin{equation}
+            M_t^{\brak{i}}\brak{j} = M_t^{\brak{i}}\brak{j-1} - \eta\frac{1}{N_m}\sum_{l=1}^{N_m}g\brak{x_l,M_t^{\brak{i}}\brak{j-1}}
+            \label{eq:sgd-update}
+        \end{equation}
+    \end{enumerate}
+    \item Send \(M_t^{\brak{i}}\brak{N_m}\) to the server.
+\end{enumerate}
+
+At server:
+
+\begin{enumerate}
+    \item Let \(\cbrak{M_t^{\brak{i}}}_{i=1}^{N_u}\) be the number of local
+    models obtained by the server.
+    \item Update the global model
+    \begin{equation}
+        M_{t+1}^{\brak{g}} \leftarrow \frac{1}{n}\sum_{i=1}^{N_u}n_iM_t^{\brak{i}}
+        \label{eq:sgd-server-update}
+    \end{equation}
+    where \(n_i\) is the number of samples with user \(i\) and \(n = 
+    \sum_{i=1}^{N_u}n_i\) is the total number of samples.
+    \item For the next round, samples a random subset of \(N_u\) users, and 
+    transmit \(M_{t+1}^{\brak{g}}\).
+\end{enumerate}
+
+\section{Communication-Efficient Federated Learning}
+
+To make FL communication-efficient, the following methods are adopted.
+
+\begin{enumerate}
+    \item \textbf{Structured updates:} Here, we assume that the input space is structured
+        before the optimization algorithm is run.
+        \begin{enumerate}
+            \item \emph{Low rank:} \(M_t^{\brak{i}} = UV\) where \(U\in\bR^{m\times k}\)
+                and \(V\in\bR^{k\times n}\), \(k << \min\cbrak{m,n}\).
+            \item \emph{Random mask:} \(M_t^{\brak{i}}\) is sparse. The server sends
+                a random mask to drive the coefficients in these positions to 
+                zero.
+        \end{enumerate}
+    \item \textbf{Sketched updates:} Here, no structure is added by the server, but a lossy 
+        version of the model is send to the server. \(\tilde{M}_t^{\brak{i}}\) 
+        is defined by running SGD. However, an unbiased estimator \(M_t^{\brak{i}}\)
+        is sent.
+        \begin{enumerate}
+            \item \emph{Subsampling:} Some entries are sampled by the client and 
+                transmitted to the server.
+            \item \emph{Quantization:} Model coefficients are quantized before
+                transmission to server.
+        \end{enumerate}
+\end{enumerate}
+
+The following conclusions can be made.
+\begin{enumerate}
+    \item In general, sketched updates perform better than structured updates 
+    for smaller number of rounds, but worse that for larger number of rounds. 
+    \item We can even apply a hybrid of the above methods at the client.
+    \item There is a marked increase in accuracy when using two bits per 
+    dimension as opposed to one, but not after that.
+\end{enumerate}
+
+\end{document}
