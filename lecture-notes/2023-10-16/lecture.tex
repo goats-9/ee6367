@@ -1,0 +1,99 @@
+% To familiarize yourself with this template, the body contains
+% some examples of its use.  Look them over.  Then you can
+% run LaTeX on this file.  After you have LaTeXed this file then
+% you can look over the result either by printing it out with
+% dvips or using xdvi.
+%
+
+\documentclass[twoside]{article}
+%\usepackage{soul}
+\usepackage{./lecnotes_macros}
+
+
+\begin{document}
+%FILL IN THE RIGHT INFO.
+%\lecture{**LECTURE-NUMBER**}{**DATE**}{**LECTURER**}{**SCRIBE**}
+\lecture{16}{16 October 2023}{Shashank Vatedka}{Gautam Singh}
+%\footnotetext{These notes are partially based on those of Nigel Mansell.}
+
+%All figures are to be placed in a separate folder named ``images''
+
+% **** YOUR NOTES GO HERE:
+
+\section{Randomized Correlated Quantization}
+
+Suppose that each of \(m\) users has \(k\) bits to transmit, that is, 
+\(Y_i \in \cbrak{0,1}^k\). Let \(K \triangleq 2^k\). We first generate
+\(c_1 \sim \mathrm{Unif}\sbrak{-\frac{1}{k},0}\), and define
+
+\begin{equation}
+    c_i = c_1 + \brak{i-1}\beta,
+    \label{eq:ci-def}
+\end{equation}
+
+where \(\beta = \frac{K+1}{K\brak{K-1}}\). Note that from \eqref{eq:ci-def},
+
+\begin{equation}
+    c_K = c_1 + 1 + \frac{1}{K} \sim \mathrm{Unif}\sbrak{1,1+\frac{1}{K}}.
+    \label{eq:cK-distr}
+\end{equation}
+
+Again, let \(\pi\) be a random permutation as before. Now, \(c_1\) and \(\pi\)
+constitute the shared randomness among the users. At each user \(U_i\), define
+
+\begin{align}
+    z_i &\triangleq \frac{x_i}{\beta} \label{eq:zi-def} \\
+    c_i^\prime &\triangleq \max_{c_j<z_i}c_j \label{eq:ci-prime-def} \\
+    \hat{x_i} = Q_i\brak{x_i} &\triangleq c_i^\prime + \beta\mathbbm{1}_{\cbrak{\frac{\pi}{m}+\gamma_i<z_i}} \label{eq:Qi-def}
+\end{align}
+
+The estimate of the empirical mean at the server is
+
+\begin{equation}
+    \hat{\bar{x}} = \frac{1}{m}\sum_{i=1}^m \hat{x_i}
+    \label{eq:emp-mean}
+\end{equation}
+
+For the multidimensional case \(\vec{x}\in\bR^d\), then we first apply the
+random rotation followed by the above scheme. The amount of shared randomness
+is \(\cO\brak{dm\log{m}} + \cO\brak{d} + \cO\brak{dm} = \cO\brak{dm\log{m}}\) 
+bits, assuming that a structured random rotation matrix is used. It is an
+open problem to reduce the amount of shared randomness while keeping the same
+MSE (asymptotically).
+
+\section{Learning in a Distributed Setting}
+
+\begin{table}[!ht]
+    \centering
+    \begin{tabular}{|c|c|c|c|}
+        \hline
+        \textbf{Parameter} & \textbf{Datacenter Learning} & \makecell{\textbf{Cross-Silo}\\\textbf{Federated Learning}} & \makecell{\textbf{Cross-Device}\\\textbf{Federated Learning}} \\
+        \hline
+        Dataset & \makecell{Not private, iid\\Same amount per node} & \makecell{Private, not iid\\Different amount per user} & \makecell{Private, not iid\\Different amount per silo} \\
+        \hline
+        Number of Users & 10-100 & 10-100 & Millions \\
+        \hline
+        \makecell{Communication\\Constraints} & \makecell{Yes, but not at the\\cost of communication.} & Yes & Yes \\
+        \hline
+        \makecell{Client\\Availability} & Yes, at all times & Yes, at all times & Not always, only subsets \\
+        \hline
+        \makecell{Client\\Reliability} & Reliable & Reliable & \makecell{Unreliable, dropouts\\common, susceptible\\to attacks} \\
+        \hline
+    \end{tabular}
+    \caption{Methods of distributed learning}
+    \label{tab:methods-dist}
+\end{table}
+
+\subsection{The FL Process}
+
+The steps in federated learning (FL) are as follows.
+
+\begin{enumerate}
+    \item \textbf{Client Selection:} Clients sampled at random.
+    \item \textbf{Broadcast:} 
+    \item \textbf{Client Computation:}
+    \item \textbf{Aggregation:}
+    \item \textbf{Model Update:} Results sent to server
+\end{enumerate}
+
+\end{document}
