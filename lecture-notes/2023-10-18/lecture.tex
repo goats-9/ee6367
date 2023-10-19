@@ -30,7 +30,7 @@ server. The steps in each round of federated learning (FL) are as follows.
     \item \textbf{Broadcast:} Send \(M_t^{\brak{g}}\) to the selected users.
     We usually assume that this step is noiseless.
     \item \textbf{Client Computation:} Each user \(i\) runs optimization 
-    algorithm and gets the \emph{local model} \(M_t{i}\), which is
+    algorithm and gets the \emph{local model} \(M_t^{\brak{i}}\), which is
     transmitted to the server. Here, we assume that each client runs SGD
     on \(n_i\) non-iid samples.
     \item \textbf{Aggregation:} Server gets \(M_t^{\brak{i}}\) for all users
@@ -38,9 +38,9 @@ server. The steps in each round of federated learning (FL) are as follows.
     noiseless. Note that user \(i\) can send its local model or the 
     difference between its local model and the global model. Usually, the
     difference is sparse and has a small norm.
-    \item \textbf{Model Update:} Server updates
+    \item \textbf{Model Update:} Server updates the global model
     \begin{equation}
-        M_{t+1}^{\brak{g}} \leftarrow f\brak{\cbrak{M_t^{\brak{i}}:i}}
+        M_{t+1}^{\brak{g}} \leftarrow f\brak{\cbrak{M_t^{\brak{i}}:i}}.
         \label{eq:update-gen}
     \end{equation}
     Usually, a weighted average of the local models is taken.
@@ -61,7 +61,7 @@ At user \(i\):
             \label{eq:sgd-update}
         \end{equation}
     \end{enumerate}
-    \item Send \(M_t^{\brak{i}}\brak{N_m}\) to the server.
+    \item Send \(M_t^{\brak{i}}\brak{N_e}\) to the server.
 \end{enumerate}
 
 At server:
@@ -76,8 +76,8 @@ At server:
     \end{equation}
     where \(n_i\) is the number of samples with user \(i\) and \(n = 
     \sum_{i=1}^{N_u}n_i\) is the total number of samples.
-    \item For the next round, samples a random subset of \(N_u\) users, and 
-    transmit \(M_{t+1}^{\brak{g}}\).
+    \item For the next round, the server samples a random subset of \(N_u\) 
+    users, and transmits \(M_{t+1}^{\brak{g}}\).
 \end{enumerate}
 
 \section{Communication-Efficient Federated Learning}
