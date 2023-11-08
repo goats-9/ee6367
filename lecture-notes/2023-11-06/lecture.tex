@@ -1,0 +1,78 @@
+% To familiarize yourself with this template, the body contains
+% some examples of its use.  Look them over.  Then you can
+% run LaTeX on this file.  After you have LaTeXed this file then
+% you can look over the result either by printing it out with
+% dvips or using xdvi.
+%
+
+\documentclass[twoside]{article}
+%\usepackage{soul}
+\usepackage{./lecnotes_macros}
+
+
+\begin{document}
+%FILL IN THE RIGHT INFO.
+%\lecture{**LECTURE-NUMBER**}{**DATE**}{**LECTURER**}{**SCRIBE**}
+\lecture{18}{06 November 2023}{Shashank Vatedka}{Gautam Singh}
+%\footnotetext{These notes are partially based on those of Nigel Mansell.}
+
+%All figures are to be placed in a separate folder named ``images''
+
+% **** YOUR NOTES GO HERE:
+
+\section{DME With Known Distribution on Inputs}
+
+Consider the DME problem where users \(U_i\) have samples \(X_i\) which are iid
+from a distribution with unknown mean. Suppose that each user sends one bit of
+information \(Y_i\). We require to minimize the maximum MSE, defined as
+
+\begin{equation}
+    \mathrm{MaxMSE} \triangleq \max_{\mu\in\bM}\abs{\hat{\mu}-\mu}^2.
+    \label{eq:maxmse-def}
+\end{equation}
+
+\subsection{Location Family}
+
+Let \(f_X\) denote a pdf with zero mean. Then, the location family 
+corresponding to \(f_X\) is given by.
+
+\begin{equation}
+    \cL\brak{f_X} \triangleq \cbrak{f_{X,\mu}\brak{x} = f_X\brak{x-\mu}},\ \mu \in \bM.
+    \label{eq:loc-fam-def}
+\end{equation}
+
+Thus, \(cL\brak{f_X}\) is a collection of pdfs where \(\mu\) is the \emph{only} 
+unknown variable.
+
+\subsection{DME From MSE}
+
+In this situation, we have
+
+\begin{align}
+    \mse\brak{\mu} &= \frac{1}{m^2}\mean{\sum_{i=1}^m\brak{\hat{X}_i-\mu}}^2 \\
+                   &= \frac{1}{m^2}\mean{\sum_{i=1}^m\brak{\hat{X}_i-\mu}^2 + \sum_{i=1}^m\sum_{\substack{j=1\\j\neq i}}^m\brak{\hat{X}_i-\mu}\brak{\hat{X}_j-\mu}} \\
+                   &= \frac{1}{m}\mean{\brak{\hat{X}_1-\mu}^2} + \frac{m-1}{m}\brak{\mean{\hat{X}_1-\mu}}^2.
+                   \label{eq:mse-mu}
+\end{align}
+
+Consider an encoder
+
+\begin{equation}
+    Y_i = 
+    \begin{cases}
+        1 & X_i \le \theta \\
+        0 & X_i > \theta
+    \end{cases}.
+    \label{eq:onebit-enc}
+\end{equation}
+
+Thus, if \(F_X\) is invertible,
+
+\begin{align}
+    \frac{1}{m}\sum_{i=1}^mY_i &\xrightarrow{\mathrm{P}} F_X\brak{\theta-\mu} \\
+    \implies \hat{\mu} &= \theta - F_X^{-1}\brak{\frac{1}{m}\sum_{i=1}^mY_i} 
+    \label{eq:mu-est}
+\end{align}
+
+\end{document}
+

@@ -1,0 +1,184 @@
+% To familiarize yourself with this template, the body contains
+% some examples of its use.  Look them over.  Then you can
+% run LaTeX on this file.  After you have LaTeXed this file then
+% you can look over the result either by printing it out with
+% dvips or using xdvi.
+%
+
+\documentclass[twoside]{article}
+%\usepackage{soul}
+\usepackage{./lecnotes_macros}
+
+
+\begin{document}
+%FILL IN THE RIGHT INFO.
+%\lecture{**LECTURE-NUMBER**}{**DATE**}{**LECTURER**}{**SCRIBE**}
+\lecture{19}{08 November 2023}{Shashank Vatedka}{Gautam Singh}
+%\footnotetext{These notes are partially based on those of Nigel Mansell.}
+
+%All figures are to be placed in a separate folder named ``images''
+
+% **** YOUR NOTES GO HERE:
+
+\section{Notions of Convergence}
+
+\begin{definition}[Almost Sure Convergence]
+    A sequence of random variables \(X_1,X_2,\ldots,X_n\) converges
+    \textbf{almost surely} to a random variable \(X\) if
+    \begin{equation}
+        \pr{\lim_{n\to\infty}\abs{X_n-X} > \epsilon} = 0,\ \forall\ \epsilon > 0.
+        \label{eq:as-def}
+    \end{equation}
+    and we denote this as \(X_n \xrightarrow{\mathrm{as}} X\).
+
+    Equivalently, we can write \eqref{eq:as-def} as
+    \begin{equation}
+        \pr{\abs{X_n-X} > \epsilon} \to 0,\ n \ge N,\ N \to \infty.
+        \label{eq:as-def-2}
+    \end{equation}
+\end{definition}
+
+\begin{definition}[Convergence in Probability]
+    We say that \(X_n\) converges to \(X\) in probability and write \(X_n \xrightarrow{\mathrm{P}}X\) if
+    \begin{equation}
+        \lim_{n\to\infty}\pr{\abs{X_n-X}>\epsilon} = 0
+        \label{eq:pr-conv-def}
+    \end{equation}
+    or equivalently
+    \begin{equation}
+        \pr{\abs{X_n-X}>\epsilon} \to 0,\ n \to 0.
+        \label{eq:pr-conv-def-2}
+    \end{equation}
+\end{definition}
+
+\begin{definition}[Convergence in Distribution]
+    We say that a sequence of random variables \(\cbrak{X_n}\) converges in
+    distribution to another random variables \(X\) if for all \(x\) where 
+    \(F_X\) is continuous,
+    \begin{equation}
+        X_n \xrightarrow{\mathrm{d}} X.
+        \label{eq:dis-conv-def}
+    \end{equation}
+\end{definition}
+
+As an example, consider \(X_1,X_2,\ldots,X_n\) which are iid samples drawn from
+an independent distribution \(f_X\). Then, \(F_{X_n}\brak{x} = F_X\brak{x}\) 
+for all \(x\) and \(n\), but \(X_n\) does not converge to \(X\) almost surely and
+in probability.
+
+\begin{theorem}[Strong Law of Large Numbers]
+    If \(X_1,X_2,\ldots,X_n\) are iid with \(\mean{X_1} = \mu < \infty\), then
+    \begin{equation}
+        \frac{1}{n}\sum_{i=1}^nX_i \xrightarrow{\mathrm{as}} \mu
+        \label{eq:slln-cond}
+    \end{equation}
+\end{theorem}
+
+We state two important results for these notions of convergence.
+
+\begin{theorem}[Weak Law of Large Numbers]
+    If \(X_1,X_2,\ldots,X_n\) are iid with \(\mean{X_1} = \mu < \infty\), then
+    \begin{equation}
+        \frac{1}{n}\sum_{i=1}^nX_i \xrightarrow{\mathrm{P}} \mu.
+        \label{eq:wlln-cond}
+    \end{equation}
+\end{theorem}
+
+\section{Mean Squared Error of DME With Location Families}
+
+In the DME problem,
+
+\begin{align}
+    \mean{Y_i} &= \pr{X_i\le\theta} \\
+               &= F_X\brak{\theta-\mu} \\
+    \implies \frac{1}{n}\sum_{i=1}^nY_i &\xrightarrow{\mathrm{as}} F_X\brak{\theta-\mu}.
+    \label{eq:slln-dme}
+\end{align}
+
+We quote another result for \(F_X^{-1}\).
+
+\begin{theorem}[Continuous Mapping Theorem]
+    \label{thm:cmt}
+    If \(g:\bR\rightarrow\bR\) is continuous and differentiable, then the
+    following identities hold.
+    \begin{enumerate}
+        \item \(X_n\xrightarrow{\mathrm{as}}X \implies g\brak{X_n}\xrightarrow{\mathrm{as}}g\brak{X}\).
+        \item \(X_n\xrightarrow{\mathrm{P}}X \implies g\brak{X_n}\xrightarrow{\mathrm{P}}g\brak{X}\).
+        \item \(X_n\xrightarrow{\mathrm{d}}X \implies g\brak{X_n}\xrightarrow{\mathrm{d}}g\brak{X}\).
+    \end{enumerate}
+\end{theorem}
+
+Using \autoref{thm:cmt}, we see that
+
+\begin{align}
+    F_X^{-1}\brak{\frac{1}{n}\sum_{i=1}^nY_i} &\xrightarrow{\mathrm{as}} F_X^{-1}\brak{F_X\brak{\theta-\mu}} \\
+    \implies \hat{\mu} &\xrightarrow{\mathrm{as}} \mu.
+    \label{eq:dme-loc-mu}
+\end{align}
+
+We also make use of the central limit theorem.
+
+\begin{theorem}[Central Limit Theorem]
+    \label{thm:clt}
+    If \(X_1,X_2,\ldots,X_n\) are iid samples with \(\mean{X_i} = \mu\) and
+    \(\var{X_i} = \sigma^2\), then
+    \begin{equation}
+        \frac{\sum_{i=1}^n\brak{X_i-\mu}}{\sqrt{n\sigma^2}} \xrightarrow{\mathrm{d}} \cN\brak{0,1}.
+        \label{eq:clt-conv}
+    \end{equation}
+\end{theorem}
+
+From \eqref{eq:clt-conv}, we have
+
+\begin{align}
+    Z \triangleq \sqrt{n}\brak{\brak{\frac{1}{n}\sum_{i=1}^nX_i}-\mu} &\xrightarrow{\mathrm{d}} \cN\brak{0,\sigma^2} \\
+    \implies \mean{Z^2} = n\brak{\mathrm{MSE}} &\to \sigma^2 \\
+    \implies \mathrm{MSE} &\to \frac{\sigma^2}{n}.
+    \label{eq:mse-n-inv}
+\end{align}
+
+However, we still cannot conclude anything about the MSE of \(\hat{\mu}\). We 
+require another tool.
+
+\section{Delta Method}
+
+Suppose \(\phi:\bR\rightarrow\bR\) is differentiable \(\cbrak{X_i}_{i=1}^n\)
+is a sequence of random variables and \(\cbrak{r_i}_{i=1}^n\) is a sequence
+of real numbers such that \(r_n\to\infty\) as \(n\to\infty\). Further, suppose
+that
+\begin{equation}
+    r_n\brak{X_n-\theta} \xrightarrow{\mathrm{d}} X.
+    \label{eq:rn-Xn-cond}
+\end{equation}
+
+Then,
+\begin{equation}
+    r_n\brak{\phi\brak{X_n}-\phi\brak{\theta}} \xrightarrow{\mathrm{d}} \brak{\frac{dt}{d\phi}\Big|_{t=\theta}}X
+\end{equation}
+
+Using the Delta Method for our problem, define
+
+\begin{equation}
+    Y_n \triangleq \frac{1}{n}\sum_{i=1}^nX_i.
+    \label{eq:Yn-def}
+\end{equation}
+
+To estimate \(\phi\brak{\mu}\), we use the \emph{plugin estimator}
+
+\begin{equation}
+    \hat{\phi\brak{\mu}} = \phi\brak{\frac{1}{n}\sum_{i=1}^nY_i}.
+    \label{eq:plugin-est-def}
+\end{equation}
+
+Hence,
+
+\begin{align}
+    \sqrt{n}\brak{Y_n-\mu} &\xrightarrow{\mathrm{d}} Y \sim \cN\brak{0,\sigma^2} \\
+    \implies \sqrt{n}\brak{\phi{Y_n} - \phi\brak{\mu}} &\xrightarrow{\mathrm{d}} \brak{\phi^\prime\brak{\mu}}Y \\
+    n\brak{\mathrm{MSE}} &\xrightarrow{\mathrm{d}} 2\mu Y \\
+    n\mse\brak{\mu^2} = 4\mu^2\sigma^2.
+    \label{eq:mse-muhat}
+\end{align}
+
+\end{document}
+
