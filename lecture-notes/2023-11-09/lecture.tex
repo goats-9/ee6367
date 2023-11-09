@@ -1,0 +1,118 @@
+% To familiarize yourself with this template, the body contains
+% some examples of its use.  Look them over.  Then you can
+% run LaTeX on this file.  After you have LaTeXed this file then
+% you can look over the result either by printing it out with
+% dvips or using xdvi.
+%
+
+\documentclass[twoside]{article}
+%\usepackage{soul}
+\usepackage{./lecnotes_macros}
+
+
+\begin{document}
+%FILL IN THE RIGHT INFO.
+%\lecture{**LECTURE-NUMBER**}{**DATE**}{**LECTURER**}{**SCRIBE**}
+\lecture{20}{09 November 2023}{Shashank Vatedka}{Gautam Singh}
+%\footnotetext{These notes are partially based on those of Nigel Mansell.}
+
+%All figures are to be placed in a separate folder named ``images''
+
+% **** YOUR NOTES GO HERE:
+
+\section{Mean Squared Error for Location Families}
+From the previous lecture, we know that
+
+\begin{equation}
+    \hat{p}_m \triangleq \frac{1}{m}\sum_{i=1}^mY_i \xrightarrow{\mathrm{as}} F_X\brak{\theta_0-\mu}
+    \label{eq:pm-as-conv}
+\end{equation}
+and
+\begin{equation}
+    \mean{Y_i} = F_X\brak{\theta_0-\mu}.
+    \label{eq:mean-Yi}
+\end{equation}
+
+Since \(Y_i\) is a bernoulli random variable,
+\begin{equation}
+    \var\brak{Y_i} = F_X\brak{\theta_0-\mu}\brak{1-F_X\brak{\theta_0-\mu}}.
+    \label{eq:var-Yi}
+\end{equation}
+
+However, from the Central Limit Theorem,
+\begin{equation}
+    \sqrt{m}\brak{\hat{p}_m - F_X\brak{\theta_0-\mu}} \xrightarrow{\mathrm{d}} \cN\brak{0,\sigma^2}.
+    \label{eq:pm-clt}
+\end{equation}
+
+Considering
+\begin{equation}
+    \phi\brak{z} \triangleq \theta_0 - F_X^{-1}\brak{z}
+    \label{eq:phi-def}
+\end{equation}
+we use the delta method and \eqref{eq:pm-clt} to obtain
+
+\begin{equation}
+    \sqrt{m}\brak{\hat{\mu}-\mu} \xrightarrow{\mathrm{d}} \phi^\prime\brak{\theta}Z.
+    \label{eq:phi-prime-solve}
+\end{equation}
+
+However,
+\begin{align}
+    \frac{d\phi}{dt} &= -\diff{t}{\brak{F_X^{-1}\brak{t}}} \\
+                     &= -\frac{1}{F_X^\prime\brak{F_X^{-1}\brak{\theta}}} \\
+                     &= -\frac{1}{f_X\brak{\theta_0-\mu}}.
+                     \label{eq:phi-drv}
+\end{align}
+
+Therefore,
+\begin{equation}
+    \sqrt{m}\brak{\hat{\mu}-\mu} \xrightarrow{\mathrm{d}} -\frac{1}{f_X\brak{\theta_0-\mu}}\cN\brak{0,\var{Y_i}}
+    \label{eq:muhat-dconv}
+\end{equation}
+and the mean squared error asymptotically is (as \(m\to\infty\)),
+\begin{equation}
+    \alpha^2 \triangleq m\mse \to \frac{F_X\brak{\theta_0-\mu}\brak{1-F_X\brak{\theta_0-\mu}}}{f_X^2\brak{\theta_0-\mu}}.
+    \label{eq:muhat-mse}
+\end{equation}
+
+From \eqref{eq:muhat-mse}, observe that if \(\theta_0\) is close to \(\mu\), 
+then the MSE is small (assuming \(f_X\) has single peak at \(x = 0\) and is 
+symmetric). 
+
+\section{Controlling the MSE}
+
+In \eqref{eq:muhat-mse}, the numerator can be arbitrarily large. Thus, we
+introduce the following protocol to recitfy that.
+
+\begin{enumerate}
+    \item Select first \(m^{0.9}\) users, and send \(\mathbbm{1}_{\cbrak{X_i\le\theta_0}} = Y_i\).
+    \item Set
+    \begin{equation}
+        \theta_n := \theta_0 - F_X^{-1}\brak{\frac{1}{m^{0.9}}}
+    \end{equation}
+    \item Remaining users send \(Y_i = \mathbbm{1}_{\cbrak{X_i\le\theta_n}}\).
+    Server updates
+    \begin{equation}
+        \hat{\mu} = \theta_n - F_X^{-1}\brak{\frac{1}{m_1}\sum_{i=1}^{m_1}Y_i},
+        \label{eq:srv-upd-dme}
+    \end{equation}
+    where \(m_1 = m - m^{0.9}\) represents the unselected users.
+\end{enumerate}
+
+Using the previous approach, for symmetric distributions and conditioned on
+\(\theta_n \xrightarrow{\mathrm{as}} \mu\),
+\begin{equation}
+    \alpha^2 \to \frac{1}{4f_X^2\brak{0}}
+\end{equation}
+
+We can obtain the lower bound for the case where \(f_X\) is symmetric and
+\(\log{f_X}\) is concave, then for any single-bit estimator, we have
+
+\begin{equation}
+    \mse \ge \frac{1}{4mf_X^2\brak{0} + I_0}.
+    \label{eq:mse-lb-concave}
+\end{equation}
+
+\end{document}
+
