@@ -1,0 +1,77 @@
+% To familiarize yourself with this template, the body contains
+% some examples of its use.  Look them over.  Then you can
+% run LaTeX on this file.  After you have LaTeXed this file then
+% you can look over the result either by printing it out with
+% dvips or using xdvi.
+%
+
+\documentclass[twoside]{article}
+%\usepackage{soul}
+\usepackage{./lecnotes_macros}
+
+
+\begin{document}
+%FILL IN THE RIGHT INFO.
+%\lecture{**LECTURE-NUMBER**}{**DATE**}{**LECTURER**}{**SCRIBE**}
+\lecture{21}{13 November 2023}{Shashank Vatedka}{Gautam Singh}
+%\footnotetext{These notes are partially based on those of Nigel Mansell.}
+
+%All figures are to be placed in a separate folder named ``images''
+
+% **** YOUR NOTES GO HERE:
+
+\section{General Single-Bit Quantization Schemes}
+
+Any one-bit quantization scheme takes the form
+
+\begin{equation}
+    Y_i = \mathbbm{1}_{\cbrak{X_i \in \cA_i}}.
+    \label{eq:one-bit-gen}
+\end{equation}
+
+For a fully distributed scheme, the \(\cA_i\) are fixed and independent of the
+samples \(X_i\). However, in an interactive scheme the \(\cA_i\) can depend on
+the \(X_i\).
+
+\subsection{A Potential One-Bit Scheme}
+The mean of a random variable \(X\) can be written in another form as
+
+\begin{align}
+    \mean{X} &= \int_{-\infty}^{\infty}xf_X\brak{x}dx \\
+             &= \int_{0}^{\infty}\pr{X>t}dt - \int_{-\infty}^0\pr{X<t}dt \\
+             &= \int_{0}^{\infty}\mean{\mathbbm{1}_{\cbrak{X>t}}}dt - \int_{-\infty}^0\mean{\mathbbm{1}_{\cbrak{X<t}}}dt \\
+             &\approx \sum_{j=0}^{\alpha}\mean{\mathbbm{1}_{\cbrak{X > j\Delta}}}\Delta - \sum_{j=-\beta}^{0}\mean{\mathbbm{1}_{\cbrak{X < j\Delta}}}\Delta
+             \label{eq:X-mean-alt}
+\end{align}
+Thus, we can create a potential scheme in which the \(j\)\textsuperscript{th} user
+transmits \(\mathbbm{1}_{\cbrak{X_j < j\Delta}}\).
+
+\section{Threshold Based Schemes}
+
+In threshold-based schemes, we have \(\cA_i = (-\infty,\theta_i]\), and
+\(Y_i = \mathbbm{1}_{\brak{X_i\le\theta_i}}\). We state the following claim.
+
+\begin{theorem}
+    For any threshold-based scheme and symmetric log-concave \(f_X\), we have
+    \begin{equation}
+        \sqrt{m}\brak{\hat{\mu}-\mu} \xrightarrow{\mathrm{d}} \frac{1}{\kappa\brak{\mu}}
+    \end{equation}
+    as \(m\to\infty\). Further,
+    \begin{align}
+        \lim_{m\to\infty}\mse &\rightarrow \frac{1}{\kappa\brak{\mu}} \\
+        \kappa\brak{\mu} &\triangleq \int_{-\infty}^{\infty}\frac{f_X^2\brak{t-\mu}}{F_X\brak{t-\mu}F_X\brak{\mu-t}}\lambda\brak{t}dt \\
+        \Lambda_m\brak{\tau} &\triangleq \frac{1}{m}\sum_{i=1}^m\mathbbm{1}_{\theta_i \le \tau} \\
+        \lambda\brak{\tau} &\triangleq \diff{\tau}{\lim_{m\to\infty}\Lambda_m\brak{\tau}} = \frac{d\Lambda\brak{\tau}}{d\tau}.
+        \label{eq:thm-defs}
+    \end{align}
+\end{theorem}
+
+Note that \(\Lambda_m\brak{z}\) is the approximation of a CDF. Further,
+if \(\theta_i\)  is uniform over \(\sbrak{-\beta,\alpha}\), then
+\begin{equation}
+    \kappa\brak{\mu} = \int_{-\beta}^{\alpha}\frac{f_X^2\brak{t-\mu}}{F_X\brak{t-\mu}F_X\brak{\mu-t}}\frac{1}{\alpha+\beta}dt.
+    \label{eq:kappa-mu-unif}
+\end{equation}
+
+\end{document}
+
