@@ -1,0 +1,20 @@
+\begin{tikzpicture}[node distance = 5ex]
+    \node[state] (C_1) {$C_1$}; 
+    \node[state] (C_2) [right=of C_1] {$C_2$}; 
+    \node (L) [right=of C_2] {$\ldots$};
+    \node[state] (C_n) [right=of L] {$C_n$}; 
+    \node[state,rectangle] (S) [above=of $(C_2.north)!0.5!(L.north)$] {$S$};
+    \node (X_1) [below=of C_1] {$\vect{X_1} \in \bR^d$};
+    \node (X_2) [below=of C_2] {$\vect{X_2}$};
+    \node (X_n) [below=of C_n] {$\vect{X_n}$};
+    \node (L1) [below=of L] {$\ldots$};
+    \node (muhat) [above=of S] {$\hat{\vect{\mu}} \triangleq \frac{1}{n}\sum_{i=1}^n\hat{\vect{X_i}}$}; 
+    \path[->]
+    (C_1) edge  node [left=1ex] {$\vect{Y_1} \in \cbrak{0,1}^b$} (S)
+    (C_2) edge  node [right=1ex] {$\vect{Y_2}$} (S)
+    (C_n) edge  node [right=1ex] {$\vect{Y_n}$} (S)
+    (S) edge node {} (muhat)
+    (X_1) edge node {} (C_1)
+    (X_2) edge node {} (C_2)
+    (X_n) edge node {} (C_n);
+\end{tikzpicture}

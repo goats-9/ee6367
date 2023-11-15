@@ -1,0 +1,50 @@
+% Set the document class and theme
+\documentclass{beamer}
+\usetheme{CambridgeUS}
+\setbeamertemplate{caption}[numbered]
+
+\usepackage{./presentation_macros}
+
+% Add presentation data here 
+
+% Text in the square brackets `[]' are shown in the footer. If not mentioned,
+% then text in the curly braces `{}' are used as theme defaults.
+
+\title[QUIC-FL]{QUIC-FL: Quick UnbIased Compression for Federated Learning\\
+\small Ran Ben Basat, Shay Vargaftik, Amit Portnoy, Gil Einziger, Yaniv Ben-Itzhak, Michael Mitzenmacher}
+\date{November 22, 2023}
+\author{Gautam Singh}
+\institute[]{Indian Institute of Technology Hyderabad}
+
+% Presentation begins here
+
+\begin{document}
+    \maketitle
+    \tableofcontents
+    \section{Introduction}
+
+    \begin{frame}
+        \frametitle{The DME Problem}
+        \begin{figure}[!ht]
+            \input{images/dme.tex}
+            \caption{Illustration of the DME Problem. Here, \(\hat{\vect{X_i}}\)
+            denotes the server estimate for \(\vect{X_i}\).} 
+            \label{fig:dme}
+        \end{figure}
+    \end{frame}
+
+    \section{Preliminaries}
+    \begin{frame}
+        \frametitle{vNMSE and NMSE}
+    \end{frame}
+
+    \section{Bounded Support Quantization (BSQ)}
+    
+    \section{Distribution-Aware Unbiased Quantization}
+    
+    \section{The QUIC-FL Algorithm}
+    
+    \section{Results}
+    
+    \section{Further Improvements}
+\end{document}
