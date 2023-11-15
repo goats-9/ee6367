@@ -36,6 +36,21 @@
     \section{Preliminaries}
     \begin{frame}
         \frametitle{vNMSE and NMSE}
+        \begin{enumerate}
+            \item The \emph{vector Normalized Mean Square Error} of \(\vect{x}\)
+            is defined as
+            \begin{equation}
+                \vnmse\brak{\vect{x}} \triangleq \frac{\mean{\norm{\hat{\vec{x}}-\vec{x}}^2_2}}{\norm{\vect{x}}^2_2}.
+                \label{eq:vnmse-def}
+            \end{equation}
+            It is normalized with respect to the \(L_2\)-norm of \(\vect{x}\).
+            \item The \emph{Normalized Mean Square Error} in the case of the DME
+            problem is defined as
+            \begin{equation}
+                \nmse \triangleq \frac{\mean{\norm{\hat{\vect{\mu}}-\vect{\mu}}^2_2}}{\frac{1}{n}\sum_{i=1}^n\norm{\vect{x_i}}^2_2} = \frac{\mean{\norm{\hat{\vect{\mu}}-\frac{1}{n}\sum_{i=1}^n\vect{x_i}}^2_2}}{\frac{1}{n}\sum_{i=1}^n\norm{\vect{x_i}}^2_2}.
+                \label{eq:nmse-def}
+            \end{equation}
+        \end{enumerate}
     \end{frame}
 
     \section{Bounded Support Quantization (BSQ)}
