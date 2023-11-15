@@ -36,24 +36,115 @@
     \section{Preliminaries}
     \begin{frame}
         \frametitle{vNMSE and NMSE}
+        \begin{definition}[vNMSE]
+        The \emph{vector Normalized Mean Square Error} of \(\vect{x}\)
+        is defined as
+        \begin{equation}
+            \vnmse\brak{\vect{x}} \triangleq \frac{\mean{\norm{\hat{\vec{x}}-\vec{x}}^2_2}}{\norm{\vect{x}}^2_2}.
+            \label{eq:vnmse-def}
+        \end{equation}
+        \end{definition}
+        \begin{definition}[NMSE]
+        The \emph{Normalized Mean Square Error} in the case of the DME
+        problem is defined as
+        \begin{equation}
+            \nmse \triangleq \frac{\mean{\norm{\hat{\vect{\mu}}-\vect{\mu}}^2_2}}{\frac{1}{n}\sum_{i=1}^n\norm{\vect{x_i}}^2_2} = \frac{\mean{\norm{\hat{\vect{\mu}}-\frac{1}{n}\sum_{i=1}^n\vect{x_i}}^2_2}}{\frac{1}{n}\sum_{i=1}^n\norm{\vect{x_i}}^2_2}.
+            \label{eq:nmse-def}
+        \end{equation}
+        \end{definition}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Randomized Hadamard Transform}
+        \begin{definition}[Walsh-Hadamard Matrix]
+            The Walsh-Hadamard matrix \(\vect{H}_{2^k}\) with \(\vect{H}_1 = 
+            \myvec{1}\) is recursively defined as
+            \begin{equation}
+                \vect{H}_{2^k} = \myvec{\vect{H}_{2^{k-1}} & \vect{H}_{2^{k-1}} \\ \vect{H}_{2^{k-1}} & \vect{H}_{2^{k-1}}}.
+                \label{eq:Hl-def}
+            \end{equation}
+        \end{definition}
+        \begin{definition}[Randomized Hadamard Transform]
+            Let \(\vect{H}\in\cbrak{-1,+1}^{d\times d}\) be a Walsh-Hadamard 
+            Matrix and \(\vect{D}\) be a diagonal matrix with uniform iid 
+            Rademacher entries \emph{i.e.}, entries that are \(\pm 1\) with 
+            equal probability. Then, the \emph{randomized Hadamard transform} 
+            (RHT) of \(\vect{x}\in\bR^d\) is given by
+            \begin{equation}
+                \cR_{\vect{H}}\brak{\vect{x}} \triangleq \cR_{\vect{H}}\brak{\vect{x}} = \brak{\frac{1}{\sqrt{d}}\vect{HD}}\vect{x}.
+                \label{eq:rht-def}
+            \end{equation}
+        \end{definition}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Properties of RHT}
+        \begin{definition}{Inverse RHT}
+            The \emph{inverse randomized Hadamard transform} of \(\vect{x}\) is given by
+            \begin{equation}
+                \cR_{\vect{H}}^{-1}\brak{x} \triangleq \cR_{\vect{H}}^{-1}\vect{x} = \cR_{\vect{H}}^\top\vect{x} = \brak{\frac{1}{\sqrt{d}}\vect{DH}}\vect{x}.
+                \label{eq:inv-rht-def}
+            \end{equation}
+        \end{definition}
+        \begin{lemma}
+            Define \(F_{i,d}\brak{x}\) to be the CDF of 
+            \(\frac{1}{\sigma}\cR_{\vect{H}}\brak{\vect{x}}_i\) and 
+            \(\Phi\brak{x}\) the CDF of the standard normal distribution.
+            Then, as \(d\to\infty\), \(\forall\ 1 \le j \le d\), 
+            \begin{equation}
+                F_{i,d}\brak{x_j} \xrightarrow{\mathrm{d}} \Phi\brak{x_j}.
+                \label{eq:rht-norm-conv}
+            \end{equation}
+        \end{lemma}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Design Goals of QUIC-FL}
         \begin{enumerate}
-            \item The \emph{vector Normalized Mean Square Error} of \(\vect{x}\)
-            is defined as
-            \begin{equation}
-                \vnmse\brak{\vect{x}} \triangleq \frac{\mean{\norm{\hat{\vec{x}}-\vec{x}}^2_2}}{\norm{\vect{x}}^2_2}.
-                \label{eq:vnmse-def}
-            \end{equation}
-            It is normalized with respect to the \(L_2\)-norm of \(\vect{x}\).
-            \item The \emph{Normalized Mean Square Error} in the case of the DME
-            problem is defined as
-            \begin{equation}
-                \nmse \triangleq \frac{\mean{\norm{\hat{\vect{\mu}}-\vect{\mu}}^2_2}}{\frac{1}{n}\sum_{i=1}^n\norm{\vect{x_i}}^2_2} = \frac{\mean{\norm{\hat{\vect{\mu}}-\frac{1}{n}\sum_{i=1}^n\vect{x_i}}^2_2}}{\frac{1}{n}\sum_{i=1}^n\norm{\vect{x_i}}^2_2}.
-                \label{eq:nmse-def}
-            \end{equation}
+            \item Less computational complexity compared to other methods, at
+            \emph{both} client and server.
+            \item Lesser amount of shared global as well as private randomness.
+            \item Same (asymptotic) NMSE as other methods: \(\cO\brak{\frac{1}{n}}\).
         \end{enumerate}
     \end{frame}
 
     \section{Bounded Support Quantization (BSQ)}
+    \begin{frame}
+        \frametitle{BSQ Algorithm}
+        \begin{enumerate}
+            \item Uses a parameter \(p\in\rsbrak{\lbrak{0,1}}\), based on which 
+            a threshold  \(\sbrak{-t_p,t_p}\) is chosen such that at most \(dp\)
+            values lie outside this interval.
+            \item \(\vect{x}\) separated into two parts: \emph{large}
+            values that lie outside this interval and \emph{small} values
+            that lie inside this interval.
+            \item To encode \(\vect{x}\),
+            \begin{enumerate}
+                \item \emph{Large} values are sent exactly, along with their
+                indices. Costs \(\log\binom{d}{dp} \approx 
+                dp\log\brak{\frac{1}{p}}\) bits. Can use delta encoding or
+                no encoding at cost of \(dp\ceil{\log d}\) bits (Authors assume
+                \(p\log d << 1\)).
+                \item \emph{Small} values are stochastically quantized and
+                sent using \(b\) bits per value.
+            \end{enumerate}
+            \item To decode and compute \(\hat{\vect{x}}\), decode the \emph{large}
+            values along with their indices. Then, estimate the quantized values.
+        \end{enumerate}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Main Result of BSQ}
+        \begin{theorem}
+            BSQ, without further assumptions, admits a worst-case NMSE of
+            \(\frac{1}{np\brak{2^b-1}^2}\) with \(\cO\brak{d}\) and
+            \(\cO\brak{nd}\) complexity for encoding and decoding respectively.
+        \end{theorem}
+        \begin{alertblock}{Arbitrarily Large NMSE}
+            Notice that the constant in the NMSE can be made arbitrarily large.
+            For example, \(p = 2^{-10},\ b = 1\).
+        \end{alertblock}
+    \end{frame}
     
     \section{Distribution-Aware Unbiased Quantization}
     
