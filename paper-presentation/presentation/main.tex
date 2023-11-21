@@ -59,11 +59,20 @@
         \frametitle{An Important Lemma}
         \begin{lemma}
             \label{lem:vnmse-nmse-rel}
-            For unbiased algorithms and independent estimates, we have
+            For \(n\) clients, we have \cite{EDEN}
             \begin{equation}
-                NMSE = \frac{vNMSE}{n}
+                NMSE = \frac{\sum_{i=1}^nvNMSE\brak{i}\norm{\vect{x}_i}_2^2}{n\sum_{i=1}^n\norm{\vect{x}_i}_2^2}
+                \label{eq:vnmse-nmse-rel}
             \end{equation}
         \end{lemma}
+        \begin{corollary}
+            \label{cor:vnmse-nmse-ball}
+            If \(\norm{\vect{x}_i} = r\ \forall\ 1 \le i \le n\), then
+            \begin{equation}
+                NMSE = \frac{vNMSE}{n}
+                \label{eq:vnmse-nmse-ball}
+            \end{equation}
+        \end{corollary}
         From the above lemma, we need the \(vNMSE\) to be a constant so that the
         \(NMSE\) is \(\cO\brak{1/n}\) for QUIC-FL.
     \end{frame}
@@ -93,7 +102,7 @@
 
     \begin{frame}
         \frametitle{Properties of RHT}
-        \begin{definition}{Inverse RHT}
+        \begin{definition}[Inverse RHT]
             The \emph{inverse randomized Hadamard transform} of \(\vect{x}\) is given by
             \begin{equation}
                 \cR_{\vect{H}}^{-1}\brak{x} \triangleq \brak{\frac{1}{\sqrt{d}}\vect{DH}}\vect{x}.
@@ -102,10 +111,11 @@
         \end{definition}
         \begin{lemma}
             \label{lem:rht-norm-conv}
-            Define \(F_{i,d}\brak{x}\) to be the CDF of 
-            \(\frac{1}{\sigma}\cR_{\vect{H}}\brak{\vect{x}}_i\) and 
-            \(\Phi\brak{x}\) the CDF of the standard normal distribution.
-            Then, as \(d\to\infty\), \(\forall\ 1 \le j \le d\), 
+            Define \(F_{i,d}\brak{x}\) to be the CDF of
+            \(\frac{1}{\sigma}\cR_{\vect{H}}\brak{\vect{x}}_i\), where
+            \(\mean{x_i^2} = \sigma^2\), and \(\Phi\brak{x}\) the CDF of the
+            standard normal distribution. Then, as \(d\to\infty\), \(\forall\ 1
+            \le j \le d\), 
             \begin{equation}
                 F_{i,d}\brak{x_j} \xrightarrow{\mathrm{d}} \Phi\brak{x_j}.
                 \label{eq:rht-norm-conv}
@@ -118,8 +128,8 @@
         \begin{enumerate}
             \item Less computational complexity compared to other methods, at
             \emph{both} client and server.
-            \item Lesser amount of shared global as well as private randomness.
             \item Same (asymptotic) NMSE as other methods: \(\cO\brak{\frac{1}{n}}\).
+            \item Better compression ratio.
         \end{enumerate}
     \end{frame}
 
@@ -171,7 +181,7 @@
     \begin{frame}
         \frametitle{Distribution-Aware Unbiased Quantization\\\small Key Idea}
         We have \(\forall\ 1 \le i \le d\), where \(\vect{R}\) denotes a random
-        rotation matrix \cite{DBLP:journals/corr/abs-2105-08339},
+        rotation matrix \cite{vargaftik2021drive},
         \begin{equation}
             \frac{\sqrt{d}}{\norm{\vect{x}}_2}\brak{\vect{Rx}}_i \sim \cN\brak{0,1}.
             \label{eq:rot-norm-conv}
@@ -241,7 +251,8 @@
 
     \begin{frame}
         \frametitle{Distribution-Aware Unbiased Quantization\\\small Discretization}
-        Can now use solvers like APOPT and IPOPT to solve for \(\cQ_{b,p}\). 
+        Can now use solvers like APOPT \cite{APOPT} and IPOPT \cite{IPOPT} to
+        solve for \(\cQ_{b,p}\). 
 
         \begin{align}
             \min_{\red{S^\prime},R} &\sum_{\substack{\red{i\in\cI_m}\\x\in\cM}}\red{S^\prime}\brak{\red{i},x}\brak{\red{\cA_{p,m}\brak{i}}-R\brak{x}}^2 \text{ s.t.} \\
@@ -364,6 +375,8 @@
             \begin{enumerate}
                 \item For the RHT, \(\mean{\brak{Z-\hat{Z}}^2} = \cO\brak{p}\).
                 \item Can compensate by slight increase in \(b\).
+                \item The guarantees on the constant are still better than DRIVE
+                and EDEN.
             \end{enumerate}
             \item Fastest complexity in comparison to other state-of-the-art
             methods, at both client and server.
@@ -430,8 +443,8 @@
     \end{frame}
 
     \section{References}
-    \begin{frame}
-        \frametitle{References}
+    \begin{frame}[allowframebreaks]
+        % \frametitle{References}
         \bibliography{references.bib}
     \end{frame}
 \end{document}
