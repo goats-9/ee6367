@@ -59,7 +59,8 @@
         \frametitle{An Important Lemma}
         \begin{lemma}
             \label{lem:vnmse-nmse-rel}
-            For \(n\) clients, we have \cite{EDEN}
+            For \(n\) clients with unbiased and independent estimates, we have
+            \cite{EDEN}
             \begin{equation}
                 NMSE = \frac{\sum_{i=1}^nvNMSE\brak{i}\norm{\vect{x}_i}_2^2}{n\sum_{i=1}^n\norm{\vect{x}_i}_2^2}
                 \label{eq:vnmse-nmse-rel}
@@ -67,7 +68,7 @@
         \end{lemma}
         \begin{corollary}
             \label{cor:vnmse-nmse-ball}
-            If \(\norm{\vect{x}_i} = r\ \forall\ 1 \le i \le n\), then
+            If all clients have the same \(vNMSE\), then
             \begin{equation}
                 NMSE = \frac{vNMSE}{n}
                 \label{eq:vnmse-nmse-ball}
@@ -105,7 +106,7 @@
         \begin{definition}[Inverse RHT]
             The \emph{inverse randomized Hadamard transform} of \(\vect{x}\) is given by
             \begin{equation}
-                \cR_{\vect{H}}^{-1}\brak{x} \triangleq \brak{\frac{1}{\sqrt{d}}\vect{DH}}\vect{x}.
+                \cR_{\vect{H}}^{-1}\brak{\vect{x}} \triangleq \brak{\frac{1}{\sqrt{d}}\vect{DH}}\vect{x}.
                 \label{eq:inv-rht-def}
             \end{equation}
         \end{definition}
