@@ -1,0 +1,107 @@
+\documentclass[journal,12pt,twocolumn]{IEEEtran}
+\usepackage{./report_macros}
+
+\begin{document}
+\vspace{3cm}
+\title{QUIC-FL: A Report}
+\author{Gautam Singh\\CS21BTECH11018}
+\maketitle
+\tableofcontents
+\bigskip
+
+\begin{abstract}
+    This document is a report of the paper \cite{basat2023quicfl}. It 
+    summarizes the main contributions of the authors and analyzes the results
+    obtained. This report also lists out possible future research in the area
+    of Federated Learning (FL).
+\end{abstract}
+
+\section{Problem Statement}
+\label{sec:ps}
+The authors of \cite{basat2023quicfl} consider the \textbf{Distributed Mean 
+Estimation} problem, illustrated in \autoref{fig:dme}. Specifically, each 
+client \(C_i\) sends data \(\vect{x}_i\), quantized as \(\vect{Y}_i\in
+\cbrak{0,1}^b\), for \(1 \le i \le n\). Here, \(b\) represents the number
+of bits used for quantization per client.
+
+\begin{figure}[!ht]
+    \input{images/dme.tex}
+    \caption{An Illustration of the DME Problem.}
+    \label{fig:dme}
+\end{figure}
+
+The server computes the estimates \(\hat{\vect{X}}_i\) using the obtained 
+\(\vect{Y}_i\) as
+\begin{equation}
+    \hat{\vect{\mu}} \triangleq \frac{1}{n}\sum_{i=1}^n\hat{\vect{X}}_i.
+    \label{eq:muhat-def}
+\end{equation}
+
+The aim of the DME problem is to estimate the true mean \(\vect{\mu} \triangleq
+\frac{1}{n}\sum_{i=1}^n\vect{X}_i\) using \(\hat{\vect{\mu}}\) as defined in
+\eqref{eq:muhat-def} with \emph{minimal error} (see \autoref{ssec:nmse}).
+
+\section{Goals of the Paper}
+\label{sec:goals}
+The goals of \cite{basat2023quicfl} are to develop a quantization scheme that,
+compared to other state-of-the-art methods (see \autoref{ssec:res-comp} for a 
+list of such methods).
+
+\begin{enumerate}
+    \item Less computational complexity compared to other methods, at 
+    \emph{both} client and server.
+    \item Same (asymptotic) NMSE of \(\cO\brak{\frac{1}{n}}\).
+    \item Same convergence rate.
+    \item Better compression ratio.
+\end{enumerate}
+
+\section{Preliminaries}
+\label{sec:prelims}
+    \subsection{vNMSE and NMSE}
+    \label{ssec:nmse}
+    The main performance metric used to assess a quantization scheme is the
+    \emph{squared error} of the estimated mean from the actual mean. To perform
+    such an assessment, the authors define two quantities that will be useful.
+    \begin{definition}[vNMSE]
+        \label{def:vnmse}
+        The \emph{vector Normalized Mean Square Error} of \(\vect{x}\)
+        is defined as
+        \begin{equation}
+            vNMSE \triangleq \frac{\mean{\norm{\hat{\vec{x}}-\vec{x}}^2_2}}{\norm{\vect{x}}^2_2}.
+            \label{eq:vnmse-def}
+        \end{equation}
+    \end{definition}
+    \begin{definition}[NMSE]
+        \label{def:nmse}
+        The \emph{Normalized Mean Square Error} in the case of the DME
+        problem is defined as
+        \begin{equation}
+            NMSE \triangleq \frac{\mean{\norm{\hat{\vect{\mu}}-\vect{\mu}}^2_2}}{\frac{1}{n}\sum_{i=1}^n\norm{\vect{x}_i}^2_2} = \frac{\mean{\norm{\hat{\vect{\mu}}-\frac{1}{n}\sum_{i=1}^n\vect{x}_i}^2_2}}{\frac{1}{n}\sum_{i=1}^n\norm{\vect{x}_i}^2_2}.
+            \label{eq:nmse-def}
+        \end{equation}
+    \end{definition}
+    From \autoref{def:vnmse} and \autoref{def:nmse}, we can perform simple 
+    algebraic manipulations to obtain the following result.
+    \begin{lemma}
+    \end{lemma}
+    \begin{proof}
+    \end{proof}
+    \subsection{Randomized Hadamard Transform}
+    \label{ssec:rht}
+\section{Bounded Support Quantization (BSQ)}
+\label{sec:bsq}
+\section{Distribution-Aware Unbiased Quantization}
+\label{sec:dauq}
+\section{The QUIC-FL Algorithm}
+\label{sec:quicfl}
+\section{Results}
+\label{sec:res}
+    \subsection{Complexity Analysis}
+    \label{ssec:res-comp}
+    \subsection{Accuracy}
+    \label{ssec:res-acc}
+\section{Future Works}
+\label{sec:future}
+\bibliography{references.bib}
+
+\end{document}
